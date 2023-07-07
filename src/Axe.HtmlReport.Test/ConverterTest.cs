@@ -18,15 +18,7 @@ namespace Axe.HtmlReport.Test
         {
             //Execute mon test automatisé
             using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.Chrome);
-            driver.Navigate().GoToUrl("https://www.axa.fr");
-            var cookie = new WebElementDescription(driver)
-            {
-                Id = "footer_tc_privacy_button"
-            };
-            if(cookie.Exists(5))
-            {
-                cookie.Click();
-            }
+            driver.Navigate().GoToUrl("https://webengine-test.azurewebsites.net/home-insurance/");
 
             var sw = Stopwatch.StartNew();
             //Effectuer une analyse d'accessibilité

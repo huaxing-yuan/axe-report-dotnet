@@ -98,18 +98,18 @@ namespace Axe.HtmlReport
         private string GenerateSection(AxeResultEnhancedItem[] items, string path)
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var violation in items)
+            foreach (var item in items)
             {
-                sb.AppendLine($"<h2> Accessibility Rule: <span class='label'>{violation.Item.Id}</span></h2>");
+                sb.AppendLine($"<h2>Accessibility Rule: <span class='label'>{item.Item.Id}</span></h2>");
                 sb.AppendLine("<ul>");
-                sb.AppendLine($"<li>Impact: <span class='{violation.Item.Impact}'>{violation.Item.Impact}</span></li>");
-                sb.AppendLine("<li>Description: " + HttpUtility.HtmlEncode(violation.Item.Description) + "</li>");
-                sb.AppendLine("<li>Help: " + HttpUtility.HtmlEncode(violation.Item.Help) + "</li>");
-                sb.AppendLine($"<li>HelpUrl: <a href={violation.Item.HelpUrl}>{violation.Item.HelpUrl}</a></li>");
+                sb.AppendLine($"<li>Impact: <span class='{item.Item.Impact}'>{item.Item.Impact}</span></li>");
+                sb.AppendLine("<li>Description: " + HttpUtility.HtmlEncode(item.Item.Description) + "</li>");
+                sb.AppendLine("<li>Help: " + HttpUtility.HtmlEncode(item.Item.Help) + "</li>");
+                sb.AppendLine($"<li>HelpUrl: <a href={item.Item.HelpUrl}>{item.Item.HelpUrl}</a></li>");
                 sb.AppendLine("</ul>");
-                sb.AppendLine("<h2> Nodes violdated rules: " + violation.Nodes.Length + "</h2>");
-                sb.AppendLine("<table><tr><th>Element</th><th>Screenshot</th></tr>");
-                foreach (var node in violation.Nodes)
+                sb.AppendLine("<h3> Nodes under current rules: " + item.Nodes.Length + "</h3>");
+                sb.AppendLine("<table><tr><th style='width: 50%'>Element</th><th style='width: 50%'>Screenshot</th></tr>");
+                foreach (var node in item.Nodes)
                 {
                     sb.AppendLine("<tr><td>");
                     sb.AppendLine("<div>");

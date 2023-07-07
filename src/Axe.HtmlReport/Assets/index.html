@@ -35,6 +35,10 @@
             border-radius: 5px;
         }
 
+        .img{
+            max-width: 100%;
+        }
+
         .moderate{
             background-color: orange;
             color: white;
@@ -128,34 +132,30 @@
         }
 
         // Get the element with id="defaultOpen" and click on it
-        document.getElementById("defaultOpen").click();
+        onload = document.getElementById("defaultOpen").click();
     </script>
     </head>
 <body>
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'Violations')" id="defaultOpen">Violations</button>
-        <button class="tablinks" onclick="openTab(event, 'Incomplete')">Incomplete</button>
-        <button class="tablinks" onclick="openTab(event, 'NonApplicable')">Non Applicable</button>
-        <button class="tablinks" onclick="openTab(event, 'Passed')">Passed</button>
+        <button class="tablinks" onclick="openTab(event, 'Violations')" id="defaultOpen"><h1>Violations</h1></button>
+        <button class="tablinks" onclick="openTab(event, 'Incomplete')"><h1>Incomplete</h1></button>
+        <button class="tablinks" onclick="openTab(event, 'NonApplicable')"><h1>Non Applicable</h1></button>
+        <button class="tablinks" onclick="openTab(event, 'Passed')"><h1>Passed</h1></button>
     </div>
 
     <div id="Violations" class="tabcontent">
-        <h3>Violations</h3>
         {{Violations}}
     </div>
 
     <div id="Incomplete" class="tabcontent">
-        <h3>Incomplete</h3>
         {{Incomplete}}
     </div>
 
     <div id="NonApplicable" class="tabcontent">
-        <h3>NonApplicable</h3>
         {{NonApplicable}}
     </div>
 
     <div id="Passed" class="tabcontent">
-        <h3>Passed</h3>
         {{Passed}}
     </div>
 </body>

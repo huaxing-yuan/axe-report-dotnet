@@ -37,6 +37,7 @@ namespace Axe.HtmlReport.Selenium
         /// <returns></returns>
         private static byte[] ScreenShot(WebDriver driver, AxeResultNode node, HtmlReportOptions options)
         {
+            //TODO: Support iFrame with FrameSelector
             var cssSelector = node.Target?.Selector;
             var xPath = node.XPath?.Selector;
 
