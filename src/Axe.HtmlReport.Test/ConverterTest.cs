@@ -14,11 +14,11 @@ namespace Axe.HtmlReport.Test
         }
 
         [Test]
-        public void Test1()
+        public void UnitTest()
         {
             //Execute mon test automatisé
-            using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.Chrome);
-            driver.Navigate().GoToUrl("https://webengine-test.azurewebsites.net/home-insurance/");
+            using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);
+            driver.Navigate().GoToUrl("https://axafrance.github.io/webengine-dotnet/");
 
             var sw = Stopwatch.StartNew();
             //Effectuer une analyse d'accessibilité

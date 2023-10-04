@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using SkiaSharp;
 using System.Drawing;
+using System.Xml.Linq;
 
 namespace Axe.HtmlReport.Selenium
 {
@@ -37,38 +38,82 @@ namespace Axe.HtmlReport.Selenium
         /// <returns></returns>
         private static byte[] ScreenShot(WebDriver driver, AxeResultNode node, HtmlReportOptions options)
         {
-            //TODO: Support iFrame with FrameSelector
-            var cssSelector = node.Target?.Selector;
-            var xPath = node.XPath?.Selector;
+            var selectors = node.Target.FrameShadowSelectors;
+            IWebElement? element = null;
+            if(selectors.Count > 1)
+            {
+                if (selectors.Any((IList<string> shadowSelectors) => shadowSelectors.Count > 1))
+                {
+                    //it contains shadow dom iFrame
+                    throw new NotImplementedException("Shadow Dom element not yet implemented.");
+                }
+                else
+                {
+                    //it contains iFrame
+                    var iFrameSelector = node.Target.FrameSelectors.ToArray();
 
-            //find given element
-            var element = driver.FindElement(By.CssSelector(cssSelector));
-            if (element == null)
-            {
-                element = driver.FindElement(By.XPath(xPath));
-            }
-            if(element is WebElement we)
-            {
-                //advanced screenshot: take the screenshot of the whole viewport, and marks the location of the element.
-                //standard screenshot: take the screenshot of the element only.
-                return options.UseAdvancedScreenshot ? AdvancedScreenshot(driver, we, options) : we.GetScreenshot().AsByteArray;
+                    //TODO: Unable to locate and screenshot elements inside frames.
+                    //At current state, 
+                    element = driver.FindElement(By.CssSelector(iFrameSelector[0]));
+                    /*
+                    foreach(var s in iFrameSelector)
+                    {
+                        element = driver.FindElement(By.CssSelector(s));
+                        if(element.TagName == "iframe")
+                        {
+                            driver.SwitchTo().Frame(element);
+                        }
+                        else
+                        {
+                            element = driver.FindElement(By.CssSelector(s));
+                        }
+                    }*/
+                }
+
             }
             else
             {
+                var cssSelector = node.Target?.Selector;
+                var xPath = node.XPath?.Selector;
+
+                //find given element
+                element = driver.FindElement(By.CssSelector(cssSelector));
+                if (element == null)
+                {
+                    element = driver.FindElement(By.XPath(xPath));
+                }
+            }
+
+            if (element!= null && element is WebElement we)
+            {
+                var screenshot = options.UseAdvancedScreenshot ? AdvancedScreenshot(driver, we, options) : we.GetScreenshot().AsByteArray;
+                driver.SwitchTo().DefaultContent(); //goes back to default context (leaving iframes)
+                return screenshot;
+            }
+            else
+            {
+                driver.SwitchTo().DefaultContent();
                 throw new WebDriverException("The element can not be converted to type WebElement for screenshot.");
-            }            
+            }
+
+
         }
 
         private static byte[] AdvancedScreenshot(WebDriver driver, WebElement element, HtmlReportOptions options)
         {
             BringToView(element, driver);
             var imageViewPort = driver.GetScreenshot();
-
+            var windowSize = driver.Manage().Window.Size;
             var locatable = (ILocatable)element;
-            var location = locatable.Coordinates.LocationInViewport;
+
+            var location = locatable.Coordinates.LocationInViewport; //location and size are for 100% dpi
             var size = element.Size;
-            var screenshot = MarkOnImage(imageViewPort, location, size, options);
-            return screenshot;
+            if (size.Height != 0 && size.Width != 0)
+            {
+                var screenshot = MarkOnImage(imageViewPort, location, size, options);
+                return screenshot;
+            }
+            return new byte[0];
         }
 
         /// <summary>
@@ -89,10 +134,12 @@ namespace Axe.HtmlReport.Selenium
             using SKCanvas canvas = new SKCanvas(bitmap);
             canvas.DrawRect(location.X, location.Y,
                 size.Width, size.Height,
-                new SKPaint() {
+                new SKPaint()
+                {
                     Color = color,
                     Style = SKPaintStyle.Stroke,
-                    StrokeWidth = options.HighlightThickness});
+                    StrokeWidth = options.HighlightThickness
+                });
             using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
             return data.ToArray();
         }

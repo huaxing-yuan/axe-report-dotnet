@@ -10,9 +10,55 @@
             font-size: 12px;
         }
 
+        .collapsible {
+            background-color: #b7dbff;
+            color: black;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: 1px solid white;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+        }
+
+        h1{
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #8cc5ff;
+        }
+
+        .collapsible:after {
+            content: '\002B';
+            color: black;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        
+        span.tag{
+            color: darkblue;
+        }
+
+        .active:after {
+            content: "\2212";
+        }
+
+        /** content of collapsible **/
+        .content {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: #f1f1f1;
         }
 
         th, td {
@@ -28,6 +74,13 @@
             border-radius: 5px;
         }
 
+        .fixedSize {
+            display: inline-block;
+            width: 70px;
+            text-align: center;
+            margin: 0px 10px 0px 0px;
+        }
+
         .serious{
             background-color: red;
             color: white;
@@ -35,7 +88,7 @@
             border-radius: 5px;
         }
 
-        .img{
+        img{
             max-width: 100%;
         }
 
@@ -132,12 +185,32 @@
         }
 
         // Get the element with id="defaultOpen" and click on it
-        onload = document.getElementById("defaultOpen").click();
+        $(function () {
+            $('#defaultOpen').click();
+        });
+
+        window.ready = function () {
+            $('#defaultOpen').click();
+        }
+
+        window.onload = function() {
+            $('#defaultOpen').click();
+        }
+
     </script>
     </head>
 <body>
+
+    <h1>Accessibility Report</h1>
+    <h2>Url: {{PageUrl}}</h2>
+    <h3>Score: {{Score}}</h3>
+    <h3>Timestamp: {{TimeStamp}}</h3>
+
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'Violations')" id="defaultOpen"><h1>Violations</h1></button>
+        <button class="tablinks" onclick="openTab(event, 'Violations')" id="defaultOpen">
+            <h1>Violations</h1><br />
+            {{ViolationRules}} rules, {{ViolationNodes}} occurrences
+        </button>
         <button class="tablinks" onclick="openTab(event, 'Incomplete')"><h1>Incomplete</h1></button>
         <button class="tablinks" onclick="openTab(event, 'NonApplicable')"><h1>Non Applicable</h1></button>
         <button class="tablinks" onclick="openTab(event, 'Passed')"><h1>Passed</h1></button>
@@ -158,5 +231,24 @@
     <div id="Passed" class="tabcontent">
         {{Passed}}
     </div>
+
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>

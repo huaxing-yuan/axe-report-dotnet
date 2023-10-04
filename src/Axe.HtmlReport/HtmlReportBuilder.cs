@@ -1,5 +1,6 @@
 ﻿using Deque.AxeCore.Commons;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
 
@@ -74,12 +75,17 @@ namespace Axe.HtmlReport
             string inapplicable = GenerateSection(result.Inapplicable, path);
             string html = GetHtmlTemplate();
             html = html.Replace("{{Title}}", Options.Title)
+                .Replace("{{PageUrl}}", result.Url)
+                .Replace("{{TimeStamp}}", result.AxeResult.Timestamp.ToString())
+                .Replace("{{Score}}", result.Score.ToString())
                 .Replace("{{Violations}}", violations)
                 .Replace("{{Passed}}", passes)
                 .Replace("{{Incomplete}}", incomplete)
+                .Replace("{{ViolationRules}}", result.Violations.Count().ToString())
+                .Replace("{{ViolationNodes}}", result.Violations.Sum(x => x.Nodes.Count()).ToString())
                 .Replace("{{NonApplicable}}", inapplicable);
             string filename = Path.Combine(path, "index.html");
-            File.WriteAllText(filename,html);
+            File.WriteAllText(filename, html);
             //TODO: according to the option, make report as zip file or leave it as folder
             return filename;
         }
@@ -88,7 +94,17 @@ namespace Axe.HtmlReport
         {
             //read content from Embeded Resource `Assets/index.html`
             var assembly = typeof(HtmlReportBuilder).Assembly;
-            var resourceName = "Axe.HtmlReport.Assets.index.html";
+            var resourceName = assembly.GetName().Name + ".Assets.index.html";
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+                throw new Exception($"Unable to find resource {resourceName} in assembly {assembly.FullName}");
+            return new StreamReader(stream).ReadToEnd();
+        }
+
+        private string GetRulePartTemplate()
+        {
+            var assembly = typeof(HtmlReportBuilder).Assembly;
+            var resourceName = assembly.GetName().Name + ".Assets.rule-part.html";
             using var stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
                 throw new Exception($"Unable to find resource {resourceName} in assembly {assembly.FullName}");
@@ -97,18 +113,11 @@ namespace Axe.HtmlReport
 
         private string GenerateSection(AxeResultEnhancedItem[] items, string path)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder overall = new StringBuilder();
+            var template = GetRulePartTemplate();
             foreach (var item in items)
             {
-                sb.AppendLine($"<h2>Accessibility Rule: <span class='label'>{item.Item.Id}</span></h2>");
-                sb.AppendLine("<ul>");
-                sb.AppendLine($"<li>Impact: <span class='{item.Item.Impact}'>{item.Item.Impact}</span></li>");
-                sb.AppendLine("<li>Description: " + HttpUtility.HtmlEncode(item.Item.Description) + "</li>");
-                sb.AppendLine("<li>Help: " + HttpUtility.HtmlEncode(item.Item.Help) + "</li>");
-                sb.AppendLine($"<li>HelpUrl: <a href={item.Item.HelpUrl}>{item.Item.HelpUrl}</a></li>");
-                sb.AppendLine("</ul>");
-                sb.AppendLine("<h3> Nodes under current rules: " + item.Nodes.Length + "</h3>");
-                sb.AppendLine("<table><tr><th style='width: 50%'>Element</th><th style='width: 50%'>Screenshot</th></tr>");
+                StringBuilder sb = new StringBuilder();
                 foreach (var node in item.Nodes)
                 {
                     sb.AppendLine("<tr><td>");
@@ -117,17 +126,10 @@ namespace Axe.HtmlReport
                     var xpath = node.Node.XPath;
 
                     // get nodeElement from cssSelector or xpath
-                    if (cssSelector?.Selector is not null)
-                    {
-                        sb.AppendLine("<b>CssSelector:</b> " + cssSelector.Selector);
-                    }
-                    else if (xpath?.Selector != null)
+                    sb.AppendLine("<b>Selector:</b> " + cssSelector.ToString());
+                    if (xpath?.Selector != null)
                     {
                         sb.AppendLine("<b>XPath</b>: " + xpath.Selector);
-                    }
-                    else
-                    {
-                        continue;
                     }
                     sb.AppendLine("</div>");
                     sb.AppendLine("<pre>" + HttpUtility.HtmlEncode(node.Node.Html) + "</pre>");
@@ -140,11 +142,18 @@ namespace Axe.HtmlReport
                         sb.AppendLine("<img src=\"" + filename + "\" />");
                     }
                     sb.AppendLine("</td></tr>");
-
                 }
-                sb.AppendLine("</table>");
+                overall.Append(
+                    template.Replace("{{RuleId}}", item.Item.Id)
+                    .Replace("{{Impact}}", item.Item.GetImpact())
+                    .Replace("{{Description}}", HttpUtility.HtmlEncode(item.Item.Description))
+                    .Replace("{{Help}}", HttpUtility.HtmlEncode(item.Item.Help))
+                    .Replace("{{HelpUrl}}", item.Item.HelpUrl)
+                    .Replace("{{RuleNodeCount}}", item.Nodes.Length.ToString())
+                    .Replace("{{RuleNodes}}", sb.ToString())
+);
             }
-            return sb.ToString();
+            return overall.ToString();
         }
 
         public GetScreenshotDelegate GetScreenshot { get; internal set; }
@@ -160,7 +169,7 @@ namespace Axe.HtmlReport
         /// <returns></returns>
         private AxeResult EmptyAnalyzeDelegate()
         {
-            throw new System.NotImplementedException("Unable to analyze, You'll need to apply a Test Framework with .WithSelenium(driver) or .WithPlaywright(context)");
+            throw new System.NotImplementedException("Test Framework Not specified. Please pass .WithSelenium(driver) or .WithPlaywright(context) before ");
         }
 
     }

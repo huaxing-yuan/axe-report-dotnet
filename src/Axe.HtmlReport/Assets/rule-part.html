@@ -1,0 +1,16 @@
+﻿<!-- This is the template of a single axe rule -->
+<button type="button" class="collapsible">
+    <span class='{{Impact}} fixedSize'>{{Impact}}</span>
+    <span class='label'>{{RuleId}}</span> {{Description}}
+    <span class="tag">| {{RuleNodeCount}} occurrence(s)</span>
+</button>
+<div class="content">
+    <ul>
+        <li>Help: <a href={{HelpUrl}}>{{Help}}</a></li>
+    </ul>
+    <h3> Nodes under current rules: </h3>
+    <table>
+        <tr><th style='width: 50%'>Element</th><th style='width: 50%'>Screenshot</th></tr>
+        {{RuleNodes}}
+    </table>
+</div>

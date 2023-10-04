@@ -8,14 +8,16 @@
 
   <ItemGroup>
     <None Remove="Assets\index.html" />
+    <None Remove="Assets\rule-part.html" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\index.html" />
+    <EmbeddedResource Include="Assets\rule-part.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Deque.AxeCore.Commons" Version="4.4.0-alpha.c9651f2c2284967c64d2f28e460b5181d0af5c6d" />
+    <PackageReference Include="Deque.AxeCore.Commons" Version="4.8.0" />
   </ItemGroup>
 
 </Project>
