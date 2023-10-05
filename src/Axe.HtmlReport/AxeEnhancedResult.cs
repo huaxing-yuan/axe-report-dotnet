@@ -112,12 +112,12 @@ namespace Axe.HtmlReport
             int passeScore = 0;
             foreach (var violation in this.Violations)
             {
-                var scorePerviolation = ScorePerImpact(violation.Item) * violation.Nodes.Count();
+                var scorePerviolation = ScorePerImpact(violation.Item); // * violation.Nodes.Count();
                 violationScore += scorePerviolation;
             }
             foreach (var passed in this.Passes)
             {
-                var scorePerPassed = ScorePerImpact(passed.Item) * passed.Nodes.Count();
+                var scorePerPassed = ScorePerImpact(passed.Item); // * passed.Nodes.Count();
                 passeScore += scorePerPassed;
             }
             Scorebase = passeScore + violationScore;

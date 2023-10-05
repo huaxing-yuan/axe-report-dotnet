@@ -14,7 +14,7 @@ namespace Axe.HtmlReport.Test
         }
 
         [Test]
-        public void UnitTest()
+        public void AuditAndExport()
         {
             //Execute mon test automatisé
             using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);

@@ -73,7 +73,7 @@ namespace Axe.HtmlReport
             string passes = GenerateSection(result.Passes, path);
             string incomplete = GenerateSection(result.Incomplete, path);
             string inapplicable = GenerateSection(result.Inapplicable, path);
-            string html = GetHtmlTemplate();
+            string html = GetHtmlTemplate("index.html");
             html = html.Replace("{{Title}}", Options.Title)
                 .Replace("{{PageUrl}}", result.Url)
                 .Replace("{{TimeStamp}}", result.AxeResult.Timestamp.ToString())
@@ -90,68 +90,55 @@ namespace Axe.HtmlReport
             return filename;
         }
 
-        private string GetHtmlTemplate()
+        private string GetHtmlTemplate(string filename)
         {
             //read content from Embeded Resource `Assets/index.html`
             var assembly = typeof(HtmlReportBuilder).Assembly;
-            var resourceName = assembly.GetName().Name + ".Assets.index.html";
+            var resourceName = assembly.GetName().Name + ".Assets." + filename;
             using var stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
                 throw new Exception($"Unable to find resource {resourceName} in assembly {assembly.FullName}");
             return new StreamReader(stream).ReadToEnd();
         }
 
-        private string GetRulePartTemplate()
-        {
-            var assembly = typeof(HtmlReportBuilder).Assembly;
-            var resourceName = assembly.GetName().Name + ".Assets.rule-part.html";
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream == null)
-                throw new Exception($"Unable to find resource {resourceName} in assembly {assembly.FullName}");
-            return new StreamReader(stream).ReadToEnd();
-        }
 
         private string GenerateSection(AxeResultEnhancedItem[] items, string path)
         {
             StringBuilder overall = new StringBuilder();
-            var template = GetRulePartTemplate();
+            var template = GetHtmlTemplate("rule-part.html");
             foreach (var item in items)
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (var node in item.Nodes)
                 {
-                    sb.AppendLine("<tr><td>");
-                    sb.AppendLine("<div>");
+                    var nodeTemplate = GetHtmlTemplate("node-part.html");
                     var cssSelector = node.Node.Target;
                     var xpath = node.Node.XPath;
-
-                    // get nodeElement from cssSelector or xpath
-                    sb.AppendLine("<b>Selector:</b> " + cssSelector.ToString());
-                    if (xpath?.Selector != null)
-                    {
-                        sb.AppendLine("<b>XPath</b>: " + xpath.Selector);
-                    }
-                    sb.AppendLine("</div>");
-                    sb.AppendLine("<pre>" + HttpUtility.HtmlEncode(node.Node.Html) + "</pre>");
-                    sb.AppendLine("</td><td>");
+                    var display = node.Screenshot != null ? "block" : "none";
+                    string filename = string.Empty;
                     if (node.Screenshot != null)
                     {
                         Guid id = Guid.NewGuid();
-                        var filename = id.ToString() + ".png";
+                        filename = id.ToString() + ".png";
                         File.WriteAllBytes(Path.Combine(path, filename), node.Screenshot);
-                        sb.AppendLine("<img src=\"" + filename + "\" />");
                     }
-                    sb.AppendLine("</td></tr>");
+
+                    sb.Append(
+                        nodeTemplate.Replace("{{Selector}}", cssSelector.ToString())
+                        .Replace("{{HtmlCode}}", HttpUtility.HtmlEncode(node.Node.Html))
+                        .Replace("{{Display}}", display)
+                        .Replace("{{Filename}}", filename)
+                        );
                 }
                 overall.Append(
                     template.Replace("{{RuleId}}", item.Item.Id)
+                    .Replace("{{RuleTags}}", string.Join(' ', item.Item.Tags.Select(x => $"<div class='regularition'>{x}</div>")))
                     .Replace("{{Impact}}", item.Item.GetImpact())
                     .Replace("{{Description}}", HttpUtility.HtmlEncode(item.Item.Description))
                     .Replace("{{Help}}", HttpUtility.HtmlEncode(item.Item.Help))
                     .Replace("{{HelpUrl}}", item.Item.HelpUrl)
                     .Replace("{{RuleNodeCount}}", item.Nodes.Length.ToString())
-                    .Replace("{{RuleNodes}}", sb.ToString())
-);
+                    .Replace("{{RuleNodes}}", sb.ToString()));
             }
             return overall.ToString();
         }

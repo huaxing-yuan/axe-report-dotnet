@@ -1,0 +1,27 @@
+﻿<button type="button" class="collapsible">Element: {{Selector}}</button>
+<div class="content inner" style="display:{{Display}}">
+    <h3>Extracted Html Code</h3>
+    <pre>{{HtmlCode}}</pre>
+    <table>
+        <tr>
+            <td>Checks performed</td>
+            <td>Screenshot</td>    
+        </tr>
+        <tr>
+            <td>
+                <div>Any Checks: Checks where at least one must have passed:</div>
+                {{AnyChecks}}
+
+                <div>All Checks: Checks that were made where all must have passed:</div>
+                {{AllChecks}}
+
+                <div>None Checks: Checks that were made where all must have not passed:</div>
+                {{NoneChecks}}
+            </td>
+            <td>
+                <img src="{{Filename}}" alt="Screenshot of checked rules" class="thumbnail" />
+            </td>
+        </tr>
+    </table>
+    
+</div>
