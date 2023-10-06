@@ -132,9 +132,9 @@ namespace Axe.HtmlReport
                         .Replace("{{HtmlCode}}", HttpUtility.HtmlEncode(node.Node.Html))
                         .Replace("{{Display}}", display)
                         .Replace("{{Filename}}", filename)
-                        .Replace("{{AnyChecks}}", ToHtml(node.Node.Any, "Any Checks"))
-                        .Replace("{{AllChecks}}", ToHtml(node.Node.Any, "All Checks"))
-                        .Replace("{{NoneChecks}}", ToHtml(node.Node.Any, "None Checks"))
+                        .Replace("{{AnyChecks}}", ChecksToHtml(node.Node.Any, "Any Checks"))
+                        .Replace("{{AllChecks}}", ChecksToHtml(node.Node.Any, "All Checks"))
+                        .Replace("{{NoneChecks}}", ChecksToHtml(node.Node.Any, "None Checks"))
                         );
                 }
                 overall.Append(
@@ -150,22 +150,22 @@ namespace Axe.HtmlReport
             return overall.ToString();
         }
 
-        private string ToHtml(AxeResultCheck[]? any, string label)
+        private string ChecksToHtml(AxeResultCheck[]? any, string label)
         {
             if (any != null)
             {
                 var sb = new StringBuilder();
                 foreach (AxeResultCheck item in any)
                 {
-                    sb.AppendLine("Check Id:" + item.Id);
-                    sb.AppendLine("Impact:" + item.Impact);
-                    sb.AppendLine("Message:" + item.Message);
-                    if(item.Data != null)
-                    {
-                        sb.AppendLine("Data:" + item.Data.ToString());
-                    }
+                    var template = GetHtmlTemplate("check-part.html")
+                        .Replace("{{CheckId}}", item.Id)
+                        .Replace("{{Impact}}", item.Impact)
+                        .Replace("{{Message}}", WebUtility.HtmlEncode(item.Message))
+                        .Replace("{{HasData}}", item.Data != null ? "block" : "none")
+                        .Replace("{{Data}}", WebUtility.HtmlEncode(item.Data?.ToString() ?? string.Empty));
+                    sb.AppendLine(template);
                 }
-                return WebUtility.HtmlEncode(sb.ToString());
+                return sb.ToString();
             }
             return "No rules audited for " + label;
         }
