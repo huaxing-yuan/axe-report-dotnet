@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\check-part.html" />
     <None Remove="Assets\index.html" />
     <None Remove="Assets\node-part.html" />
     <None Remove="Assets\rule-part.html" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\check-part.html" />
     <EmbeddedResource Include="Assets\index.html" />
     <EmbeddedResource Include="Assets\node-part.html" />
     <EmbeddedResource Include="Assets\rule-part.html" />

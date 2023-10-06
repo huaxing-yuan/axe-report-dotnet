@@ -1,4 +1,5 @@
 ﻿using Deque.AxeCore.Commons;
+using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -78,6 +79,9 @@ namespace Axe.HtmlReport
                 .Replace("{{PageUrl}}", result.Url)
                 .Replace("{{TimeStamp}}", result.AxeResult.Timestamp.ToString())
                 .Replace("{{Score}}", result.Score.ToString())
+                .Replace("{{ScoreColor}}", result.ScoreForegroundColor)
+                .Replace("{{ScoreBackgroundColor}}", result.ScoreBackgroundColor)
+                .Replace("{{ScoreRotation}}", result.ScoreRotation.ToString())
                 .Replace("{{Violations}}", violations)
                 .Replace("{{Passed}}", passes)
                 .Replace("{{Incomplete}}", incomplete)
@@ -128,6 +132,9 @@ namespace Axe.HtmlReport
                         .Replace("{{HtmlCode}}", HttpUtility.HtmlEncode(node.Node.Html))
                         .Replace("{{Display}}", display)
                         .Replace("{{Filename}}", filename)
+                        .Replace("{{AnyChecks}}", ToHtml(node.Node.Any, "Any Checks"))
+                        .Replace("{{AllChecks}}", ToHtml(node.Node.Any, "All Checks"))
+                        .Replace("{{NoneChecks}}", ToHtml(node.Node.Any, "None Checks"))
                         );
                 }
                 overall.Append(
@@ -141,6 +148,26 @@ namespace Axe.HtmlReport
                     .Replace("{{RuleNodes}}", sb.ToString()));
             }
             return overall.ToString();
+        }
+
+        private string ToHtml(AxeResultCheck[]? any, string label)
+        {
+            if (any != null)
+            {
+                var sb = new StringBuilder();
+                foreach (AxeResultCheck item in any)
+                {
+                    sb.AppendLine("Check Id:" + item.Id);
+                    sb.AppendLine("Impact:" + item.Impact);
+                    sb.AppendLine("Message:" + item.Message);
+                    if(item.Data != null)
+                    {
+                        sb.AppendLine("Data:" + item.Data.ToString());
+                    }
+                }
+                return WebUtility.HtmlEncode(sb.ToString());
+            }
+            return "No rules audited for " + label;
         }
 
         public GetScreenshotDelegate GetScreenshot { get; internal set; }

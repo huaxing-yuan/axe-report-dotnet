@@ -4,35 +4,55 @@
 <head>
     <meta charset="utf-8" />
     <title>{{Title}}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <style>
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
+            font-family: Segoe UI, Helvetica, sans-serif;
+            font-size: 14px;
+            min-width: 800px;
         }
 
+        h1 {
+            font-family: Segoe UI Light, Helvetica, sans-serif;
+            margin-top: 0px;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+            font-size: 36px;
+        }
+
+        #navbar {
+            background: #F1F1F1;
+            margin: 10px 0px 0px 0px;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 10px 0px;
+        }
+
+        /* Expander using CSS + JS*/
         .collapsible {
             color: black;
             cursor: pointer;
             padding: 10px 18px;
             width: 100%;
-            border: 1px solid white;
+            border: 1px solid #DDD;
+            background: #EEE;
             text-align: left;
             outline: none;
             font-size: 14px;
+            border-radius: 10px;
         }
 
-        h1 {
-            padding-bottom: 4px;
-            margin-bottom: 4px;
-        }
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
 
-        .active, .collapsible:hover {
+        .collapsible:hover {
             background-color: #b7dbff;
+        }
+
+        .active {
+            background-color: #99ccff;
+            border-radius: 10px 10px 0px 0px;
         }
 
         .collapsible:after {
@@ -45,11 +65,33 @@
             font-size: 16px;
         }
 
+        .collapsible.active:after {
+            content: "\23F6";
+        }
+
+        /** content of collapsible **/
+        .content {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: #f5f5f5;
+            border-radius: 0px 0px 10px 10px;
+            margin: 0px 0px 5px 0px;
+        }
+
+
+        /** content of inner collapsible (inside another collapsible) */
+        .content .inner {
+            background-color: #eeeeee;
+            transition: none;
+        }
+
         span.tag {
             color: darkblue;
         }
 
-        /* Used to show tags */
+        /* Used to show tags, standards */
         div.regularition {
             vertical-align: middle;
             background-color: darkblue;
@@ -61,23 +103,7 @@
             display: inline-block;
         }
 
-        .collapsible.active:after {
-            content: "\23F6";
-        }
 
-        /** content of collapsible **/
-        .content {
-            padding: 0 18px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.2s ease-out;
-            background-color: #f1f1f1;
-        }
-
-        / /** content of inner collapsible (inside another collapsible) */
-        .content .inner {
-            transition: none;
-        }
 
         th, td {
             padding: 5px;
@@ -111,9 +137,19 @@
             max-width: 100%;
         }
 
-        img.thumbnail {
-            max-width: 350px;
-            max-height: 300px;
+            img.thumbnail {
+                max-width: 350px;
+                max-height: 300px;
+            }
+
+        /* issue severity tag:critical, serious, moderate, minor*/
+        .critical {
+            background-color: maroon;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         .serious {
@@ -143,19 +179,10 @@
             display: inline-block;
         }
 
-        .critical {
-            background-color: maroon;
-            color: white;
-            padding: 8px;
-            border-radius: 8px;
-            vertical-align: middle;
-            display: inline-block;
-        }
-
         pre {
-            background-color: #f1f1f1;
-            padding: 5px;
+            background-color: #EEEEEE;
             border-radius: 5px;
+            border: 1px solid #CCCCCC;
             white-space: pre-wrap;
         }
 
@@ -164,6 +191,7 @@
             overflow: hidden;
             border: 1px solid #ccc;
             background-color: #f1f1f1;
+            border-radius: 10px 10px 0px 0px;
         }
 
             /* Style the buttons that are used to open the tab content */
@@ -174,22 +202,24 @@
                 outline: none;
                 cursor: pointer;
                 padding: 14px 16px;
+                font-size: 18px;
                 transition: 0.3s;
             }
 
                 /* Change background color of buttons on hover */
                 .tab button:hover {
-                    background-color: #ddd;
+                    background-color: #ccc;
                 }
 
                 /* Create an active/current tablink class */
                 .tab button.active {
-                    background-color: #ccc;
+                    background-color: #ddd;
                 }
 
         /* Style the tab content */
         .tabcontent {
             display: none;
+            border-radius: 0px 0px 10px 10px;
             padding: 6px 12px;
             border: 1px solid #ccc;
             border-top: none;
@@ -206,6 +236,82 @@
                 opacity: 1;
             }
         }
+
+        /* Donut Chart showing accessibility index */
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+
+        .donut-label {
+            /* (A1) CIRCLE */
+            width: 80px;
+            height: 80px;
+            margin: 10px;
+            background: #EEEEEE;            
+            border-radius: 50%;
+            text-align: center;
+            display: block;
+            position: absolute;
+            font-size: 40px;
+            font-weight: 300;
+        }
+
+
+        .donut {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            text-align: center;
+            display: block;
+            position: absolute;
+            /* (A2) SEGMENTS */
+            background: conic-gradient( #{{ScoreColor}} 0deg {{ScoreRotation}}deg, transparent {{ScoreRotation}}deg 360deg );
+            transform: rotate(-{{ScoreRotation}}deg);
+            opacity: 0;
+            animation: rotate 1s 1 forwards;
+        }
+
+        .donut-container {
+            width: 100px;
+            height: 100px;
+            float: right;
+            margin: 15px 30px;
+        }
+
+        p.center {
+            position: absolute;
+            text-align: center;
+            font-size: 40px;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            margin: auto;
+            z-index: 10;
+            border-radius: 50%;
+            padding: 17%;
+            color: #{{ScoreBackgroundColor}};
+        }
+
+        /* Animation */
+        @keyframes rotate {
+            from {
+                transform: rotate(-180deg);
+                opacity: 0
+            }
+
+            to {
+                transform: rotate(0deg);
+                opacity: 1
+            }
+        }
+
+
     </style>
     <script type="text/javascript">
 
@@ -229,13 +335,25 @@
         })
 
     </script>
+    
 </head>
 <body>
-
-    <h1>Accessibility Test Report</h1>
-    <h2>Url: {{PageUrl}}</h2>
-    <h3>Score: {{Score}}</h3>
-    <h3>Timestamp: {{TimeStamp}}</h3>
+    <div id="navbar">
+        <div class='donut-container'>
+            <div class='donut'>
+            </div>
+            <div class="donut-label">
+                <p class="center">
+                    {{Score}}
+                </p>
+            </div>
+        </div>
+        <div>
+            <h1>Accessibility Test Report</h1>
+            <h2>Url: {{PageUrl}}</h2>
+            <h3>Timestamp: {{TimeStamp}}</h3>
+        </div>
+    </div>
 
     <div class="tab">
         <button class="tablinks active" onclick="openTab(event, 'Violations')">🔴 Violations</button>
@@ -301,7 +419,8 @@
         function delay(time) {
             return new Promise(resolve => setTimeout(resolve, time));
         }
-    </script>
 
+        hljs.highlightAll();
+    </script>
 </body>
 </html>
