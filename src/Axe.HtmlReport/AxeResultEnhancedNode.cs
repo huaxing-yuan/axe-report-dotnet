@@ -9,6 +9,7 @@ namespace Axe.HtmlReport
 {
     public class AxeResultEnhancedNode
     {
+
         public AxeResultEnhancedNode(AxeResultNode node)
         {
             Node = node;

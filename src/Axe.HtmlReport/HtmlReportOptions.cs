@@ -59,11 +59,6 @@ namespace Axe.HtmlReport
         public bool ScreenshotPasses { get; set; } = false;
         
         /// <summary>
-        /// If true, the report will include screenshots for all inapplicable. Default is false.
-        /// </summary>
-        public bool ScreenshotInapplicable { get; set; } = false;
-
-        /// <summary>
         /// If true, the report will include screenshots for all incomplete. Default is true.
         /// </summary>
         public bool ScreenshotIncomplete { get; set; } = true;

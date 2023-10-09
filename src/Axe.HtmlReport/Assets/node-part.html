@@ -1,25 +1,43 @@
-﻿<button type="button" class="collapsible">🔗 {{Selector}}</button>
+﻿<button type="button" class="collapsible inner">🔗 {{Selector}}</button>
 <div class="content inner" style="display:{{Display}}">
     <h3>Html Code</h3>
     <pre><code class="language-html">{{HtmlCode}}</code></pre>
     <table>
         <tr>
-            <td>Checks performed</td>
-            <td>Screenshot</td>
+            <td width="99%"><h3>Checks performed</h3></td>
+            <td style="min-width: 350px; white-space: nowrap;"><h3>Screenshot</h3></td>
         </tr>
         <tr>
             <td>
-                <div>Any Checks: Checks where at least one must have passed:</div>
-                {{AnyChecks}}
-
-                <div>All Checks: Checks that were made where all must have passed:</div>
-                {{AllChecks}}
-
-                <div>None Checks: Checks that were made where all must have not passed:</div>
-                {{NoneChecks}}
+                <!-- horizontal tab to display checks -->
+                <div class="tab horizontal">
+                    <table class="nospace">
+                        <tr>
+                            <td>
+                                <div><button class="horizontalLinks" onclick="openHorizontalTab(event, 'anyChecks-{{UniqueCheckId}}')">ANY</button></div>
+                                <div><button class="horizontalLinks" onclick="openHorizontalTab(event, 'allchecks-{{UniqueCheckId}}')">ALL</button></div>
+                                <div><button class="horizontalLinks" onclick="openHorizontalTab(event, 'nonechecks-{{UniqueCheckId}}')">NONE</button></div>
+                            </td>
+                            <td>
+                                <div id="anyChecks-{{UniqueCheckId}}" class="horizontalTabContent">
+                                    <H3>Any Checks: Checks where at least one must have passed:</H3>
+                                    {{AnyChecks}}
+                                </div>
+                                <div id="allchecks-{{UniqueCheckId}}" class="horizontalTabContent">
+                                    <h3>All Checks: Checks that were made where all must have passed:</h3>
+                                    {{AllChecks}}
+                                </div>
+                                <div id="nonechecks-{{UniqueCheckId}}" class="horizontalTabContent">
+                                    <h3>None Checks: Checks that were made where all must have not passed:</h3>
+                                    {{NoneChecks}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </td>
             <td>
-                <img src="{{Filename}}" alt="Screenshot of checked rules" class="thumbnail" />
+                <img src="{{Filename}}" alt="Screenshot of checked rules" class="thumbnail" onclick="showCanvas(this)" />
             </td>
         </tr>
     </table>

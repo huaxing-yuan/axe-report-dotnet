@@ -86,9 +86,16 @@ namespace Axe.HtmlReport.Selenium
 
             if (element!= null && element is WebElement we)
             {
-                var screenshot = options.UseAdvancedScreenshot ? AdvancedScreenshot(driver, we, options) : we.GetScreenshot().AsByteArray;
-                driver.SwitchTo().DefaultContent(); //goes back to default context (leaving iframes)
-                return screenshot;
+                try
+                {
+                    var screenshot = options.UseAdvancedScreenshot ? AdvancedScreenshot(driver, we, options) : we.GetScreenshot().AsByteArray;
+                    driver.SwitchTo().DefaultContent(); //goes back to default context (leaving iframes)
+                    return screenshot;
+                }
+                catch {
+                    //in some cases (hidden element, 0 height element, etc. the screeshot is not possible, leave these cases behind.
+                    return new byte[0];
+                }
             }
             else
             {

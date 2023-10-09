@@ -19,5 +19,7 @@ namespace Axe.HtmlReport
             impact ??= item.Nodes.FirstOrDefault()?.None.FirstOrDefault()?.Impact;
             return impact;
         }
+
+
     }
 }

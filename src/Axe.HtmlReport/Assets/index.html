@@ -12,6 +12,8 @@
             font-family: Segoe UI, Helvetica, sans-serif;
             font-size: 14px;
             min-width: 800px;
+            margin: 0px;
+            padding: 0px;
         }
 
         h1 {
@@ -44,26 +46,36 @@
             border-radius: 10px;
         }
 
+            .collapsible.active {
+                background-color: #99ccff;
+                border-radius: 10px 10px 0px 0px;
+            }
 
+            .collapsible.inner {
+                background-color: #fff4d7;
+            }
 
-        .collapsible:hover {
-            background-color: #b7dbff;
-        }
+            .collapsible:hover {
+                background-color: #b7dbff;
+            }
 
-        .active {
-            background-color: #99ccff;
-            border-radius: 10px 10px 0px 0px;
-        }
+            .collapsible.inner :hover {
+                background-color: #ffecbb;
+            }
 
-        .collapsible:after {
-            content: '\23F7';
-            color: black;
-            font-weight: bold;
-            float: right;
-            margin-left: 10px;
-            margin-right: 5px;
-            font-size: 16px;
-        }
+            .collapsible.inner.active {
+                background-color: #b7dbff;
+            }
+
+            .collapsible:after {
+                content: '\23F7';
+                color: black;
+                font-weight: bold;
+                float: right;
+                margin-left: 10px;
+                margin-right: 5px;
+                font-size: 16px;
+            }
 
         .collapsible.active:after {
             content: "\23F6";
@@ -73,6 +85,7 @@
         .content {
             padding: 0 18px;
             max-height: 0;
+            min-width: 400px;
             overflow: hidden;
             transition: max-height 0.2s ease-out;
             background-color: #f5f5f5;
@@ -82,7 +95,7 @@
 
 
         /** content of inner collapsible (inside another collapsible) */
-        .content .inner {
+        .content.inner {
             background-color: #eeeeee;
             transition: none;
         }
@@ -105,7 +118,7 @@
 
 
 
-        th, td {
+        th {
             padding: 5px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -114,11 +127,14 @@
         .label {
             background-color: gray;
             color: white;
-            padding: 5px;
-            border-radius: 5px;
+            padding: 4px;
+            border-radius: 8px;
+            min-height: 16px;
+            min-width: 16px;
             display: inline-block;
             vertical-align: middle;
         }
+
 
         .fixedSize {
             display: inline-block;
@@ -138,45 +154,49 @@
         }
 
             img.thumbnail {
-                max-width: 350px;
-                max-height: 300px;
+                max-width: 500px;
+                max-height: 400px;
+                cursor: zoom-in;
+                border: 1px solid black;
+                padding: 2px;
+            }
+
+                img.thumbnail:hover {
+                    border: 3px solid darkblue;
+                    padding: 0px;
+                }
+
+            img.center {
+                max-width: 200%;
+                max-height: 200%;
+                display: block;
+                left: auto;
+                right: auto;
+                top: auto;
+                bottom: auto;
+                margin: auto;
+                filter: drop-shadow(0 0 0.75rem black);
             }
 
         /* issue severity tag:critical, serious, moderate, minor*/
-        .critical {
+        .label.critical {
             background-color: maroon;
             color: white;
-            padding: 8px;
-            border-radius: 8px;
-            vertical-align: middle;
-            display: inline-block;
         }
 
-        .serious {
+        .label.serious {
             background-color: red;
             color: white;
-            padding: 8px;
-            border-radius: 8px;
-            vertical-align: middle;
-            display: inline-block;
         }
 
-        .moderate {
+        .label.moderate {
             background-color: orange;
             color: white;
-            padding: 8px;
-            border-radius: 8px;
-            vertical-align: middle;
-            display: inline-block;
         }
 
-        .minor {
+        .label.minor {
             background-color: yellow;
             color: black;
-            padding: 8px;
-            border-radius: 8px;
-            vertical-align: middle;
-            display: inline-block;
         }
 
         pre {
@@ -194,6 +214,12 @@
             border-radius: 10px 10px 0px 0px;
         }
 
+
+            .tab.horizontal {
+                border-radius: 10px;
+            }
+
+
             /* Style the buttons that are used to open the tab content */
             .tab button {
                 background-color: inherit;
@@ -206,7 +232,8 @@
                 transition: 0.3s;
             }
 
-                /* Change background color of buttons on hover */
+                /* Change background color of buttons on hover
+                */
                 .tab button:hover {
                     background-color: #ccc;
                 }
@@ -216,6 +243,13 @@
                     background-color: #ddd;
                 }
 
+
+            .tab.horizontal button {
+                min-width: 200px;
+                width: 100%;
+                float: unset;
+            }
+
         /* Style the tab content */
         .tabcontent {
             display: none;
@@ -223,7 +257,23 @@
             padding: 6px 12px;
             border: 1px solid #ccc;
             border-top: none;
+            height: 100%;
             animation: fadeEffect 1s; /* Fading effect takes 1 second */
+        }
+
+        .horizontalTabContent {
+            display: none;
+            padding: 6px 12px;
+            animation: fadeEffect 1s; /* Fading effect takes 1 second */
+        }
+
+
+        table.nospace{
+            border-collapse: collapse;
+        }
+
+        table.nospace td{
+            padding: 0px;
         }
 
         /* Go from zero to full opacity */
@@ -250,7 +300,7 @@
             width: 80px;
             height: 80px;
             margin: 10px;
-            background: #EEEEEE;            
+            background: #EEEEEE;
             border-radius: 50%;
             text-align: center;
             display: block;
@@ -279,6 +329,10 @@
             height: 100px;
             float: right;
             margin: 15px 30px;
+        }
+
+        td{
+            vertical-align: top;
         }
 
         p.center {
@@ -311,6 +365,24 @@
             }
         }
 
+        #imageCanvasContainer {
+            width: 100%;
+            height: 100%;
+            display: none;
+            background-color: rgb(0, 0, 0, 0.60);
+            position: fixed;
+            z-index: 100;
+            
+        }
+
+        #imageCanvas {
+            width: 100%;
+            height: 100%;
+            animation: fadeEffect 0.5s;
+            padding: 40px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
 
     </style>
     <script type="text/javascript">
@@ -329,15 +401,56 @@
             evt.currentTarget.className += " active";
         }
 
+        function openHorizontalTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("horizontalTabContent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("horizontalLinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+
+
         // Get the element with id="defaultOpen" and click on it
         window.addEventListener('load', function () {
             openTab(event, 'Violations')
+            this.document.getElementById("defaultTab").className += " active";
         })
 
+        function hideCanvas() {
+            var canvas = document.getElementById("imageCanvas");
+            var container = document.getElementById("imageCanvasContainer");
+            canvas.innerHTML = "";
+            container.style.display = "none";
+        }
+
+        function showCanvas(evt) {
+            var html = evt.outerHTML;
+            var container = document.getElementById("imageCanvasContainer");
+            var canvas = document.getElementById("imageCanvas");
+            canvas.innerHTML = html;
+            var img = canvas.firstChild;
+            img.className = "center";
+            container.style.display = "block";
+        }
+
     </script>
-    
+
 </head>
 <body>
+
+    <div id="imageCanvasContainer">
+        <div id="imageCanvas" onclick="hideCanvas()">
+
+        </div>
+    </div>
+
     <div class="navbar">
         <div class='donut-container'>
             <div class='donut'>
@@ -356,10 +469,10 @@
     </div>
 
     <div class="tab">
-        <button class="tablinks active" onclick="openTab(event, 'Violations')">🔴 Violations</button>
-        <button class="tablinks" onclick="openTab(event, 'Incomplete')">🟡 Incomplete</button>
-        <button class="tablinks" onclick="openTab(event, 'NonApplicable')">⚪ Non Applicable</button>
-        <button class="tablinks" onclick="openTab(event, 'Passed')">🟢 Passed</button>
+        <button class="tablinks" id="defaultTab" onclick="openTab(event, 'Violations')">🔴 Violations ({{ViolationRules}})</button>
+        <button class="tablinks" onclick="openTab(event, 'Incomplete')">🟡 Incomplete ({{IncompleteRules}})</button>
+        <button class="tablinks" onclick="openTab(event, 'NonApplicable')">⚪ Inapplicable ({{NonApplicableRules}})</button>
+        <button class="tablinks" onclick="openTab(event, 'Passed')">🟢 Passed ({{PassedRules}})</button>
     </div>
 
     <div id="Violations" class="tabcontent">
@@ -403,16 +516,8 @@
                 if (content.style.maxHeight) {
                     content.style.maxHeight = null;
                 } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.maxHeight = "2000px";
                 }
-
-                var parent = content.parentElement;
-                if (parent.className == "content") {
-                    delay(100).then(() => {
-                        parent.style.maxHeight = parent.scrollHeight + "px";
-                    });
-                }
-
             });
         }
 

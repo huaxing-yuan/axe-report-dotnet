@@ -1,4 +1,5 @@
 ﻿using Deque.AxeCore.Commons;
+using System.IO.Compression;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -55,43 +56,85 @@ namespace Axe.HtmlReport
         /// Converts the given Axe-Core results to HTML report using actual configuration.
         /// </summary>
         /// <param name="result">The AxeResult to be converted.</param>
-        public AxeEnhancedResult Convert(AxeResult result)
+        public HtmlReportBuilder Build(AxeResult result)
         {
             //Add screenshots to AxeResult, then converted to HTML according to the option
-            AxeEnhancedResult resultEnhanced = new AxeEnhancedResult(result, this);
-            return resultEnhanced;
+            Result = new AxeEnhancedResult(result, this);
+            return this;
         }
 
         /// <summary>
-        /// Export Enhanced AxeResult (with Screenshots) to HTML file.
+        /// Analyze and Build the test report of the given context.
+        /// </summary>
+        /// <returns></returns>
+        public HtmlReportBuilder Build()
+        {
+            var result = this.Analyze();
+            Result = new AxeEnhancedResult(result, this);
+            return this;
+        }
+
+        public AxeEnhancedResult? Result
+        {
+            get; private set;
+        }
+
+        /// <summary>
+        /// Export Enhanced AxeResult (with Screenshots) to expected format.
         /// </summary>
         /// <param name="result">Processed AxeResult with screenshot</param>
-        public string Export(AxeEnhancedResult result)
+        /// <returns>
+        /// absolute path of the exported test report.
+        /// </returns>
+        public string Export()
         {
+            if (Result == null) throw new InvalidDataException("The report has not been built, please call Build or Analyze before exporting");
+            var guid = Guid.NewGuid().ToString();
             string path = Options.OutputFolder ?? Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(path);
-            string violations = GenerateSection(result.Violations, path);
-            string passes = GenerateSection(result.Passes, path);
-            string incomplete = GenerateSection(result.Incomplete, path);
-            string inapplicable = GenerateSection(result.Inapplicable, path);
+            string violations = GenerateRuleSection(Result.Violations, path);
+            string passes = GenerateRuleSection(Result.Passes, path);
+            string incomplete = GenerateRuleSection(Result.Incomplete, path);
+            string inapplicable = GenerateRuleSection(Result.Inapplicable, path);
             string html = GetHtmlTemplate("index.html");
             html = html.Replace("{{Title}}", Options.Title)
-                .Replace("{{PageUrl}}", result.Url)
-                .Replace("{{TimeStamp}}", result.AxeResult.Timestamp.ToString())
-                .Replace("{{Score}}", result.Score.ToString())
-                .Replace("{{ScoreColor}}", result.ScoreForegroundColor)
-                .Replace("{{ScoreBackgroundColor}}", result.ScoreBackgroundColor)
-                .Replace("{{ScoreRotation}}", result.ScoreRotation.ToString())
+                .Replace("{{PageUrl}}", Result.Url)
+                .Replace("{{TimeStamp}}", Result.AxeResult.Timestamp.ToString())
+                .Replace("{{Score}}", Result.Score.ToString())
+                .Replace("{{ScoreColor}}", Result.ScoreForegroundColor)
+                .Replace("{{ScoreBackgroundColor}}", Result.ScoreBackgroundColor)
+                .Replace("{{ScoreRotation}}", Result.ScoreRotation.ToString())
                 .Replace("{{Violations}}", violations)
                 .Replace("{{Passed}}", passes)
                 .Replace("{{Incomplete}}", incomplete)
-                .Replace("{{ViolationRules}}", result.Violations.Count().ToString())
-                .Replace("{{ViolationNodes}}", result.Violations.Sum(x => x.Nodes.Count()).ToString())
-                .Replace("{{NonApplicable}}", inapplicable);
+                .Replace("{{ViolationRules}}", Result.Violations.Count().ToString())
+                .Replace("{{ViolationNodes}}", Result.Violations.Sum(x => x.Nodes.Count()).ToString())
+                .Replace("{{NonApplicable}}", inapplicable)
+                .Replace("{{IncompleteRules}}", Result.Incomplete.Count().ToString())
+                .Replace("{{NonApplicableRules}}", Result.Inapplicable.Count().ToString())
+                .Replace("{{PassedRules}}", Result.Passes.Count().ToString());
+
             string filename = Path.Combine(path, "index.html");
             File.WriteAllText(filename, html);
-            //TODO: according to the option, make report as zip file or leave it as folder
-            return filename;
+
+            switch (Options.OutputFormat)
+            {
+                case OutputFormat.Html:
+                    return filename;
+                case OutputFormat.Zip:
+                    var file = Path.GetTempFileName();
+                    var zipName = Path.Combine(path, "report.zip");
+                    File.Delete(file);
+                    ZipFile.CreateFromDirectory(path, file);
+                    Directory.Delete(path, true);
+                    Directory.CreateDirectory(path);
+                    File.Copy(file, zipName, true);
+                    File.Delete(file);
+                    return zipName;
+                default:
+                    // it will be a bug if new output format is not yet implemented.
+                    throw new NotImplementedException($"Output format is not yet supported {Options.OutputFormat}");
+            }
         }
 
         private string GetHtmlTemplate(string filename)
@@ -106,8 +149,16 @@ namespace Axe.HtmlReport
         }
 
 
-        private string GenerateSection(AxeResultEnhancedItem[] items, string path)
+        static int uniqueCheckId = 0;
+        static int UniqueCheckId {
+            get{
+                return uniqueCheckId++;
+            }
+        }
+
+        private string GenerateRuleSection(AxeResultEnhancedItem[] items, string path)
         {
+
             StringBuilder overall = new StringBuilder();
             var template = GetHtmlTemplate("rule-part.html");
             foreach (var item in items)
@@ -115,6 +166,7 @@ namespace Axe.HtmlReport
                 StringBuilder sb = new StringBuilder();
                 foreach (var node in item.Nodes)
                 {
+                    //generate node (occurances of rule)
                     var nodeTemplate = GetHtmlTemplate("node-part.html");
                     var cssSelector = node.Node.Target;
                     var xpath = node.Node.XPath;
@@ -132,9 +184,10 @@ namespace Axe.HtmlReport
                         .Replace("{{HtmlCode}}", HttpUtility.HtmlEncode(node.Node.Html))
                         .Replace("{{Display}}", display)
                         .Replace("{{Filename}}", filename)
-                        .Replace("{{AnyChecks}}", ChecksToHtml(node.Node.Any, "Any Checks"))
-                        .Replace("{{AllChecks}}", ChecksToHtml(node.Node.Any, "All Checks"))
-                        .Replace("{{NoneChecks}}", ChecksToHtml(node.Node.Any, "None Checks"))
+                        .Replace("{{UniqueCheckId}}", UniqueCheckId.ToString())
+                        .Replace("{{AnyChecks}}", GenerateChecksSection(node.Node.Any, "Any Checks"))
+                        .Replace("{{AllChecks}}", GenerateChecksSection(node.Node.All, "All Checks"))
+                        .Replace("{{NoneChecks}}", GenerateChecksSection(node.Node.None, "None Checks"))
                         );
                 }
                 overall.Append(
@@ -150,9 +203,9 @@ namespace Axe.HtmlReport
             return overall.ToString();
         }
 
-        private string ChecksToHtml(AxeResultCheck[]? any, string label)
+        private string GenerateChecksSection(AxeResultCheck[]? any, string label)
         {
-            if (any != null)
+            if (any != null && any.Any())
             {
                 var sb = new StringBuilder();
                 foreach (AxeResultCheck item in any)
@@ -167,7 +220,7 @@ namespace Axe.HtmlReport
                 }
                 return sb.ToString();
             }
-            return "No rules audited for " + label;
+            return "No rules have audited for " + label;
         }
 
         public GetScreenshotDelegate GetScreenshot { get; internal set; }

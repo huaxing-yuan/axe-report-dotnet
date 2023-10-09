@@ -37,10 +37,9 @@ namespace Axe.HtmlReport
         private AxeResultEnhancedItem[] GetInapplicable(AxeResult result, HtmlReportBuilder htmlReportBuilder)
         {
             List<AxeResultEnhancedItem> inapplicable = new List<AxeResultEnhancedItem>();
-            bool takeScreenshot = htmlReportBuilder.Options.ScreenshotInapplicable;
             foreach (var i in result.Inapplicable)
             {
-                AxeResultEnhancedItem item = new AxeResultEnhancedItem(i, GetEnhancedNodes(i.Nodes, htmlReportBuilder, takeScreenshot));
+                AxeResultEnhancedItem item = new AxeResultEnhancedItem(i, GetEnhancedNodes(i.Nodes, htmlReportBuilder, false));
                 inapplicable.Add(item);
             }
             return inapplicable.ToArray();
