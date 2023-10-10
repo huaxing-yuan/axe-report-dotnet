@@ -16,7 +16,7 @@ namespace Axe.HtmlReport
         /// Gets or sets the output format of the HTML report: Zip Archive or a folder containing HTML report and all resources.
         /// </summary>
         public OutputFormat OutputFormat { get; set; } = OutputFormat.Html;
-    
+
         /// <summary>
         /// Gets or sets the output folder of the HTML report. If not set, the report will be generated in default temprary folder.
         /// </summary>
@@ -52,16 +52,21 @@ namespace Axe.HtmlReport
         /// If true, the report will include screenshots for all violations. Default is true.
         /// </summary>
         public bool ScreenshotViolations { get; set; } = true;
-        
+
         /// <summary>
         /// If true, the report will include screenshots for all passes. Default is false.
         /// </summary>
         public bool ScreenshotPasses { get; set; } = false;
-        
+
         /// <summary>
         /// If true, the report will include screenshots for all incomplete. Default is true.
         /// </summary>
         public bool ScreenshotIncomplete { get; set; } = true;
+
+        /// <summary>
+        /// The mode to calculate the accessbility scoring, default method = <see cref="ScoringMode.Weighted"/>
+        /// </summary>
+        public ScoringMode ScoringMode { get; set; } = ScoringMode.Weighted;
         
         /// <summary>
         /// Title of the report

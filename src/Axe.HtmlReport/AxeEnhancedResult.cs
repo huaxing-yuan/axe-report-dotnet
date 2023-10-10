@@ -20,8 +20,11 @@ namespace Axe.HtmlReport
         /// </summary>
         public AxeResult AxeResult { get; private set; }
 
+        public HtmlReportBuilder Builder { get; private set; }
+
         public AxeEnhancedResult(AxeResult result, HtmlReportBuilder htmlReportBuilder)
         {
+            Builder = htmlReportBuilder;
             AxeResult = result;
             Violations = GetViolations(result, htmlReportBuilder);
             Passes = GetPasses(result, htmlReportBuilder);
@@ -110,15 +113,38 @@ namespace Axe.HtmlReport
         {
             int violationScore = 0;
             int passeScore = 0;
+            var mode = Builder.Options.ScoringMode;
+
+            
             foreach (var violation in this.Violations)
             {
-                var scorePerviolation = ScorePerImpact(violation.Item); // * violation.Nodes.Count();
-                violationScore += scorePerviolation;
+                switch (mode)
+                {
+                    case ScoringMode.Weighted:
+                        violationScore += ScorePerImpact(violation.Item);
+                        break;
+                    case ScoringMode.NonWeighted:
+                        violationScore += 1;
+                        break;
+                    case ScoringMode.WeightedOccurence:
+                        violationScore += ScorePerImpact(violation.Item) * violation.Nodes.Length; 
+                        break;
+                }
             }
             foreach (var passed in this.Passes)
             {
-                var scorePerPassed = ScorePerImpact(passed.Item); // * passed.Nodes.Count();
-                passeScore += scorePerPassed;
+                switch (mode)
+                {
+                    case ScoringMode.Weighted:
+                        passeScore += ScorePerImpact(passed.Item);
+                        break;
+                    case ScoringMode.NonWeighted:
+                        passeScore += 1;
+                        break;
+                    case ScoringMode.WeightedOccurence:
+                        passeScore += ScorePerImpact(passed.Item) * passed.Nodes.Length;
+                        break;
+                }
             }
             Scorebase = passeScore + violationScore;
             _score = passeScore * 100 / Scorebase;

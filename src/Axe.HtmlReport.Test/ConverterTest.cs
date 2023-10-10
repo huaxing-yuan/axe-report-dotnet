@@ -3,6 +3,7 @@ using AxaFrance.WebEngine.Web;
 using Axe.HtmlReport.Selenium;
 using OpenQA.Selenium;
 using System.Diagnostics;
+using System.Drawing;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -31,6 +32,12 @@ namespace Axe.HtmlReport.Test
 
             //Effectuer une analyse d'accessibilité
             var filename = new HtmlReportBuilder()
+                .WithOptions(new HtmlReportOptions()
+                {
+                    HighlightColor = Color.LimeGreen,
+                    HighlightThickness = 5,
+                    ScoringMode = ScoringMode.Weighted
+                })
                 .WithSelenium(driver)
                 .Build()
                 .Export();
