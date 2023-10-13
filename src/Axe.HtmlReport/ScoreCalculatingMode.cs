@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Axe.HtmlReport
 {
     /// <summary>
-    /// Mode to calculate the score
+    /// Mode to calculate the score. Different calculation mode may influenc
     /// </summary>
     public enum ScoringMode
     {

@@ -72,5 +72,15 @@ namespace Axe.HtmlReport
         /// Title of the report
         /// </summary>
         public string Title { get; set; } = "Accessibility Report";
+
+        /// <summary>
+        /// Tags used to be audited by the tool. Default Value: A and AA rules defined in WCAG 2.0, 2.1 and 2.2 and EN-301-549.
+        /// To get the complete list of all tags, refer to: https://www.deque.com/axe/core-documentation/api-documentation/#api-notes
+        /// Leaving Tag empty means all rules will be tested.
+        /// </summary>
+        public IEnumerable<string> Tags { get; set; } = new string[]
+        {
+            "wcag2a", "wcag2aa", "wcag2aaa", "wcag21a", "wcag21aa", "wcag22aa", "EN-301-549", "wcag***"
+        };
     }
 }

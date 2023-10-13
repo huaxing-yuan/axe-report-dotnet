@@ -25,6 +25,10 @@ namespace Axe.HtmlReport.Selenium
         private static AxeResult Analyze(HtmlReportBuilder builder, WebDriver driver)
         {
             Deque.AxeCore.Selenium.AxeBuilder axeBuilder = new Deque.AxeCore.Selenium.AxeBuilder(driver);
+            if (builder.Options.Tags.Any())
+            {
+                axeBuilder.WithTags(builder.Options.Tags.ToArray());
+            }
             var result = axeBuilder.Analyze();
             return result;
         }
@@ -40,7 +44,7 @@ namespace Axe.HtmlReport.Selenium
         {
             var selectors = node.Target.FrameShadowSelectors;
             IWebElement? element = null;
-            if(selectors.Count > 1)
+            if (selectors.Count > 1)
             {
                 if (selectors.Any((IList<string> shadowSelectors) => shadowSelectors.Count > 1))
                 {
@@ -84,7 +88,7 @@ namespace Axe.HtmlReport.Selenium
                 }
             }
 
-            if (element!= null && element is WebElement we)
+            if (element != null && element is WebElement we)
             {
                 try
                 {
@@ -92,7 +96,8 @@ namespace Axe.HtmlReport.Selenium
                     driver.SwitchTo().DefaultContent(); //goes back to default context (leaving iframes)
                     return screenshot;
                 }
-                catch {
+                catch
+                {
                     //in some cases (hidden element, 0 height element, etc. the screeshot is not possible, leave these cases behind.
                     return new byte[0];
                 }

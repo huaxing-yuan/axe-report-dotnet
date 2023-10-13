@@ -36,7 +36,8 @@ namespace Axe.HtmlReport.Test
                 {
                     HighlightColor = Color.LimeGreen,
                     HighlightThickness = 5,
-                    ScoringMode = ScoringMode.Weighted
+                    ScoringMode = ScoringMode.Weighted,
+                    Tags = Array.Empty<string>()
                 })
                 .WithSelenium(driver)
                 .Build()
@@ -67,7 +68,6 @@ namespace Axe.HtmlReport.Test
                 .WithSelenium(driver)
                 .Build()
                 .Export();
-
         }
     }
 }

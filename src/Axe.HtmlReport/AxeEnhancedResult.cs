@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 namespace Axe.HtmlReport
 {
     /// <summary>
-    /// Represents the complete result of accessibility test.
-    /// The report contains screenshots.
+    /// Represents the complete result of accessibility test for a single page.
     /// </summary>
+    /// <remarks>
+    /// On a complete audit of an application, the test should be performed on all pages.
+    /// </remarks>
     public class AxeEnhancedResult
     {
 
