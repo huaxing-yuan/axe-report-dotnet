@@ -13,40 +13,40 @@ namespace Axe.HtmlReport
     /// <summary>
     /// Classes for generating HTML report from given Axe-Core results
     /// </summary>
-    public class HtmlReportBuilder
+    public class PageReportBuilder
     {
-        public HtmlReportOptions Options { get; set; }
+        public PageReportOptions Options { get; set; }
 
         public bool CanGetScreenshot => GetScreenshot != EmptyGetScreenshot && GetScreenshot != null;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HtmlReportBuilder"/> class using default options.
+        /// Initializes a new instance of the <see cref="PageReportBuilder"/> class using default options.
         /// </summary>
-        public HtmlReportBuilder()
+        public PageReportBuilder()
         {
             Analyze = EmptyAnalyzeDelegate;
             GetScreenshot = EmptyGetScreenshot;
-            Options = new HtmlReportOptions();
+            Options = new PageReportOptions();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HtmlReportBuilder"/> class using the specified options.
+        /// Initializes a new instance of the <see cref="PageReportBuilder"/> class using the specified options.
         /// </summary>
         /// <param name="options"></param>
-        public HtmlReportBuilder(HtmlReportOptions options)
+        public PageReportBuilder(PageReportOptions options)
         {
             Analyze = EmptyAnalyzeDelegate;
             GetScreenshot = EmptyGetScreenshot;
             Options = options;
         }
 
-        public HtmlReportBuilder WithOptions(HtmlReportOptions options)
+        public PageReportBuilder WithOptions(PageReportOptions options)
         {
             Options = options;
             return this;
         }
 
-        private byte[]? EmptyGetScreenshot(AxeResultNode node, HtmlReportOptions options)
+        private byte[]? EmptyGetScreenshot(AxeResultNode node, PageReportOptions options)
         {
             return null;
         }
@@ -56,10 +56,10 @@ namespace Axe.HtmlReport
         /// Converts the given Axe-Core results to HTML report using actual configuration.
         /// </summary>
         /// <param name="result">The AxeResult to be converted.</param>
-        public HtmlReportBuilder Build(AxeResult result)
+        public PageReportBuilder Build(AxeResult result)
         {
             //Add screenshots to AxeResult, then converted to HTML according to the option
-            Result = new AxeEnhancedResult(result, this);
+            Result = new AxePageResult(result, this);
             return this;
         }
 
@@ -67,14 +67,14 @@ namespace Axe.HtmlReport
         /// Analyze and Build the test report of the given context.
         /// </summary>
         /// <returns></returns>
-        public HtmlReportBuilder Build()
+        public PageReportBuilder Build()
         {
             var result = this.Analyze();
-            Result = new AxeEnhancedResult(result, this);
+            Result = new AxePageResult(result, this);
             return this;
         }
 
-        public AxeEnhancedResult? Result
+        public AxePageResult? Result
         {
             get; private set;
         }
@@ -86,7 +86,7 @@ namespace Axe.HtmlReport
         /// <returns>
         /// absolute path of the exported test report.
         /// </returns>
-        public string Export()
+        public string Export(string? fileName = null)
         {
             if (Result == null) throw new InvalidDataException("The report has not been built, please call Build or Analyze before exporting");
             var guid = Guid.NewGuid().ToString();
@@ -96,7 +96,7 @@ namespace Axe.HtmlReport
             string passes = GenerateRuleSection(Result.Passes, path);
             string incomplete = GenerateRuleSection(Result.Incomplete, path);
             string inapplicable = GenerateRuleSection(Result.Inapplicable, path);
-            string html = GetHtmlTemplate("index.html");
+            string html = GetHtmlTemplate("page-result.html");
             html = html.Replace("{{Title}}", Options.Title)
                 .Replace("{{PageUrl}}", Result.Url)
                 .Replace("{{TimeStamp}}", Result.AxeResult.Timestamp.ToString())
@@ -114,13 +114,13 @@ namespace Axe.HtmlReport
                 .Replace("{{NonApplicableRules}}", Result.Inapplicable.Count().ToString())
                 .Replace("{{PassedRules}}", Result.Passes.Count().ToString());
 
-            string filename = Path.Combine(path, "index.html");
-            File.WriteAllText(filename, html);
+            string fullname = Path.Combine(path, fileName??"index.html");
+            File.WriteAllText(fullname, html);
 
             switch (Options.OutputFormat)
             {
                 case OutputFormat.Html:
-                    return filename;
+                    return fullname;
                 case OutputFormat.Zip:
                     var file = Path.GetTempFileName();
                     var zipName = Path.Combine(path, "report.zip");
@@ -137,10 +137,10 @@ namespace Axe.HtmlReport
             }
         }
 
-        private string GetHtmlTemplate(string filename)
+        internal static string GetHtmlTemplate(string filename)
         {
             //read content from Embeded Resource `Assets/index.html`
-            var assembly = typeof(HtmlReportBuilder).Assembly;
+            var assembly = typeof(PageReportBuilder).Assembly;
             var resourceName = assembly.GetName().Name + ".Assets." + filename;
             using var stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
@@ -226,7 +226,7 @@ namespace Axe.HtmlReport
         public GetScreenshotDelegate GetScreenshot { get; internal set; }
         public AnalyzeDelegate Analyze { get; internal set; }
 
-        public delegate byte[]? GetScreenshotDelegate(AxeResultNode node, HtmlReportOptions options);
+        public delegate byte[]? GetScreenshotDelegate(AxeResultNode node, PageReportOptions options);
         public delegate AxeResult AnalyzeDelegate();
 
 

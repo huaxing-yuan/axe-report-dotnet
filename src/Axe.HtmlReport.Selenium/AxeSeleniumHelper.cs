@@ -15,14 +15,32 @@ namespace Axe.HtmlReport.Selenium
         /// <param name="builder">HtmlReportBuilder object</param>
         /// <param name="driver">WebDriver object</param>
         /// <returns>The HtmlReportBuilder</returns>
-        public static HtmlReportBuilder WithSelenium(this HtmlReportBuilder builder, WebDriver driver)
+        public static PageReportBuilder WithSelenium(this PageReportBuilder builder, WebDriver driver)
         {
             builder.GetScreenshot = (node, options) => ScreenShot(driver, node, options);
             builder.Analyze = () => Analyze(builder, driver);
             return builder;
         }
 
-        private static AxeResult Analyze(HtmlReportBuilder builder, WebDriver driver)
+        public static PageReportBuilder WithSelenium(this OverallReportBuilder builder, WebDriver driver, string? title)
+        {
+            var option = builder.Options.Clone();
+            if (title != null)
+            {
+                option.Title = title;
+            }
+            else
+            {
+                option.Title = driver.Title;
+            }
+            PageReportBuilder pageReportBuilder = new PageReportBuilder()
+                .WithOptions(option)
+                .WithSelenium(driver);
+            builder.PageBuilders.Add(pageReportBuilder);
+            return pageReportBuilder;
+        }
+
+        private static AxeResult Analyze(PageReportBuilder builder, WebDriver driver)
         {
             Deque.AxeCore.Selenium.AxeBuilder axeBuilder = new Deque.AxeCore.Selenium.AxeBuilder(driver);
             if (builder.Options.Tags.Any())
@@ -34,13 +52,13 @@ namespace Axe.HtmlReport.Selenium
         }
 
         /// <summary>
-        /// Takes the screenshot. this function will be called by <see cref="HtmlReportBuilder.GetScreenshot" delegation/>
+        /// Takes the screenshot. this function will be called by <see cref="PageReportBuilder.GetScreenshot" delegation/>
         /// </summary>
         /// <param name="driver">WebDriver</param>
         /// <param name="node">Node in AxeResult</param>
-        /// <param name="options"><see cref="HtmlReportOptions"/> providing options for screenshot.</param>
+        /// <param name="options"><see cref="PageReportOptions"/> providing options for screenshot.</param>
         /// <returns></returns>
-        private static byte[] ScreenShot(WebDriver driver, AxeResultNode node, HtmlReportOptions options)
+        private static byte[] ScreenShot(WebDriver driver, AxeResultNode node, PageReportOptions options)
         {
             var selectors = node.Target.FrameShadowSelectors;
             IWebElement? element = null;
@@ -111,7 +129,7 @@ namespace Axe.HtmlReport.Selenium
 
         }
 
-        private static byte[] AdvancedScreenshot(WebDriver driver, WebElement element, HtmlReportOptions options)
+        private static byte[] AdvancedScreenshot(WebDriver driver, WebElement element, PageReportOptions options)
         {
             BringToView(element, driver);
             var imageViewPort = driver.GetScreenshot();
@@ -139,7 +157,7 @@ namespace Axe.HtmlReport.Selenium
         }
 
         //When using advanced screenshot, Use SkiaSharp to draw the element in question on the screenshot of containing view port.
-        private static byte[] MarkOnImage(Screenshot imageViewPort, Point location, Size size, HtmlReportOptions options)
+        private static byte[] MarkOnImage(Screenshot imageViewPort, Point location, Size size, PageReportOptions options)
         {
             SKColor color = new SKColor(options.HighlightColor.R, options.HighlightColor.G, options.HighlightColor.B);
             using SKBitmap bitmap = SKBitmap.Decode(imageViewPort.AsByteArray);

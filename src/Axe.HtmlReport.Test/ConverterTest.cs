@@ -31,8 +31,8 @@ namespace Axe.HtmlReport.Test
             var sw = Stopwatch.StartNew();
 
             //Effectuer une analyse d'accessibilité
-            var filename = new HtmlReportBuilder()
-                .WithOptions(new HtmlReportOptions()
+            var filename = new PageReportBuilder()
+                .WithOptions(new PageReportOptions()
                 {
                     HighlightColor = Color.LimeGreen,
                     HighlightThickness = 5,
@@ -47,6 +47,39 @@ namespace Axe.HtmlReport.Test
         }
 
         [Test]
+        public void AuditForApplication()
+        {
+            using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);
+            var defaultOptions = new PageReportOptions()
+            {
+                HighlightColor = Color.LimeGreen,
+                HighlightThickness = 5,
+                ScoringMode = ScoringMode.Weighted,
+                Tags = Array.Empty<string>(),
+                Title = "AXA.FR"
+            };
+            var builder = new OverallReportBuilder().WithDefaultOptions(defaultOptions);
+            //Analyze first page
+            driver.Navigate().GoToUrl("https://www.axa.fr/");
+            builder.WithSelenium(driver, "Main Page").Build();
+
+            //Analyze second page
+            driver.Navigate().GoToUrl("https://www.axa.fr/pro.html");
+            builder.WithSelenium(driver, "Pro").Build();
+
+            //Analyze third page
+            driver.Navigate().GoToUrl("https://www.axa.fr/pro/services-assistance.html");
+            builder.WithSelenium(driver, "Assistance").Build();
+
+            //Demarche Inondation
+            driver.Navigate().GoToUrl("https://www.axa.fr/assurance-habitation/demarches-inondation.html");
+            builder.WithSelenium(driver, "Inondation").Build();
+
+            string report = builder.Build().Export();
+            Process.Start(new ProcessStartInfo(report) { UseShellExecute = true });
+        }
+
+        [Test]
         public void AuditWCAG2ExportZip()
         {
             //Execute mon test automatisé
@@ -58,8 +91,8 @@ namespace Axe.HtmlReport.Test
             }
             catch { }
 
-            var zipReport = new HtmlReportBuilder()
-                .WithOptions(new HtmlReportOptions()
+            var zipReport = new PageReportBuilder()
+                .WithOptions(new PageReportOptions()
                 {
                     ScreenshotPasses = false,
                     UseAdvancedScreenshot = false,

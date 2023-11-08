@@ -10,7 +10,7 @@ namespace Axe.HtmlReport
     /// <summary>
     /// Options of generating HTML report
     /// </summary>
-    public sealed class HtmlReportOptions
+    public sealed class PageReportOptions
     {
         /// <summary>
         /// Gets or sets the output format of the HTML report: Zip Archive or a folder containing HTML report and all resources.
@@ -82,5 +82,24 @@ namespace Axe.HtmlReport
         {
             "wcag2a", "wcag2aa", "wcag2aaa", "wcag21a", "wcag21aa", "wcag22aa", "EN-301-549", "wcag***"
         };
+
+        internal PageReportOptions Clone()
+        {
+            return new PageReportOptions()
+            {
+                OutputFormat = OutputFormat,
+                OutputFolder = OutputFolder,
+                ReportLanguage = ReportLanguage,
+                HighlightColor = HighlightColor,
+                ScreenshotViolations = ScreenshotViolations,
+                ScreenshotPasses = ScreenshotPasses,
+                ScreenshotIncomplete = ScreenshotIncomplete,
+                HighlightThickness = HighlightThickness,
+                ScoringMode = ScoringMode,
+                Tags = Tags,
+                Title = Title,
+                UseAdvancedScreenshot = UseAdvancedScreenshot,
+            };
+        }
     }
 }

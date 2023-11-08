@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>{{Title}}</title>
+    <!-- Syntax Highting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+
+        body {
+            font-family: Segoe UI, Helvetica, sans-serif;
+            font-size: 14px;
+            min-width: 800px;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        h1 {
+            font-family: Segoe UI Light, Helvetica, sans-serif;
+            margin-top: 0px;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+            font-size: 36px;
+        }
+
+        .navbar {
+            background: #F1F1F1;
+            margin: 10px 0px 0px 0px;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 10px 0px;
+        }
+
+        span.tag {
+            color: darkblue;
+        }
+
+        /* Used to show tags, standards */
+        div.regularition {
+            vertical-align: middle;
+            background-color: darkblue;
+            color: white;
+            border-radius: 5px;
+            padding: 4px;
+            font-size: 12px;
+            margin: 0px 2px;
+            display: inline-block;
+        }
+
+
+
+        th {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .label {
+            background-color: gray;
+            color: white;
+            padding: 4px;
+            border-radius: 8px;
+            min-height: 16px;
+            min-width: 16px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
+        .fixedSize {
+            display: inline-block;
+            width: 70px;
+            text-align: center;
+            margin: 0px 10px 0px 0px;
+        }
+
+        .right {
+            float: right;
+        }
+
+
+
+        /* issue severity tag:critical, serious, moderate, minor*/
+        .label.critical {
+            background-color: maroon;
+            color: white;
+        }
+
+        .label.serious {
+            background-color: red;
+            color: white;
+        }
+
+        .label.moderate {
+            background-color: orange;
+            color: white;
+        }
+
+        .label.minor {
+            background-color: yellow;
+            color: black;
+        }
+
+
+        table.nospace{
+            border-collapse: collapse;
+        }
+
+        table.nospace td{
+            padding: 0px;
+        }
+
+        /* Go from zero to full opacity */
+        @keyframes fadeEffect {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Donut Chart showing accessibility index */
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+
+        .donut-label {
+            /* (A1) CIRCLE */
+            width: 80px;
+            height: 80px;
+            margin: 10px;
+            background: #EEEEEE;
+            border-radius: 50%;
+            text-align: center;
+            display: block;
+            position: absolute;
+            font-size: 40px;
+            font-weight: 300;
+        }
+
+
+        .donut {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            text-align: center;
+            display: block;
+            position: absolute;
+            /* (A2) SEGMENTS */
+            background: conic-gradient( #{{ScoreColor}} 0deg {{ScoreRotation}}deg, transparent {{ScoreRotation}}deg 360deg );
+            transform: rotate(-{{ScoreRotation}}deg);
+            opacity: 0;
+            animation: rotate 1s 1 forwards;
+        }
+
+        .donut-container {
+            width: 100px;
+            height: 100px;
+            float: right;
+            margin: 15px 30px;
+        }
+
+        td{
+            vertical-align: top;
+        }
+
+        p.center {
+            position: absolute;
+            text-align: center;
+            font-size: 40px;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            margin: auto;
+            z-index: 10;
+            border-radius: 50%;
+            padding: 17%;
+            color: #{{ScoreBackgroundColor}};
+        }
+
+        /* Animation */
+        @keyframes rotate {
+            from {
+                transform: rotate(-180deg);
+                opacity: 0
+            }
+
+            to {
+                transform: rotate(0deg);
+                opacity: 1
+            }
+        }
+
+    </style>
+</head>
+<div class="navbar">
+    <div class='donut-container'>
+        <div class='donut'>
+        </div>
+        <div class="donut-label">
+            <p class="center">
+                {{Score}}
+            </p>
+        </div>
+    </div>
+    <div>
+        <h1>Accessibility Report: Application {{Title}}</h1>
+        <h3>Timestamp: {{TimeStamp}}</h3>
+    </div>
+</div>
+
+<h3>Web pages tested:</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Page</th>
+            <th>Url</th>
+            <th>Score</th>
+            <th>Page Report</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{TableRowPageResult}}
+    </tbody>
+</table>
+<body>

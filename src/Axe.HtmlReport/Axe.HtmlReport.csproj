@@ -8,14 +8,18 @@
 
   <ItemGroup>
     <None Remove="Assets\check-part.html" />
-    <None Remove="Assets\index.html" />
     <None Remove="Assets\node-part.html" />
+    <None Remove="Assets\overall-result.html" />
+    <None Remove="Assets\overall-tablerow.html" />
+    <None Remove="Assets\page-result.html" />
     <None Remove="Assets\rule-part.html" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\check-part.html" />
-    <EmbeddedResource Include="Assets\index.html" />
+    <EmbeddedResource Include="Assets\overall-result.html" />
+    <EmbeddedResource Include="Assets\overall-tablerow.html" />
+    <EmbeddedResource Include="Assets\page-result.html" />
     <EmbeddedResource Include="Assets\node-part.html" />
     <EmbeddedResource Include="Assets\rule-part.html" />
   </ItemGroup>

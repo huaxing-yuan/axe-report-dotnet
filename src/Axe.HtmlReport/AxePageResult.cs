@@ -14,7 +14,7 @@ namespace Axe.HtmlReport
     /// <remarks>
     /// On a complete audit of an application, the test should be performed on all pages.
     /// </remarks>
-    public class AxeEnhancedResult
+    public class AxePageResult: BaseResult
     {
 
         /// <summary>
@@ -22,9 +22,9 @@ namespace Axe.HtmlReport
         /// </summary>
         public AxeResult AxeResult { get; private set; }
 
-        public HtmlReportBuilder Builder { get; private set; }
+        public PageReportBuilder Builder { get; private set; }
 
-        public AxeEnhancedResult(AxeResult result, HtmlReportBuilder htmlReportBuilder)
+        public AxePageResult(AxeResult result, PageReportBuilder htmlReportBuilder)
         {
             Builder = htmlReportBuilder;
             AxeResult = result;
@@ -39,7 +39,7 @@ namespace Axe.HtmlReport
             TestEnvironment = result.TestEnvironment;
         }
 
-        private AxeResultEnhancedItem[] GetInapplicable(AxeResult result, HtmlReportBuilder htmlReportBuilder)
+        private AxeResultEnhancedItem[] GetInapplicable(AxeResult result, PageReportBuilder htmlReportBuilder)
         {
             List<AxeResultEnhancedItem> inapplicable = new List<AxeResultEnhancedItem>();
             foreach (var i in result.Inapplicable)
@@ -50,7 +50,7 @@ namespace Axe.HtmlReport
             return inapplicable.ToArray();
         }
 
-        private AxeResultEnhancedItem[] GetIncomplete(AxeResult result, HtmlReportBuilder htmlReportBuilder)
+        private AxeResultEnhancedItem[] GetIncomplete(AxeResult result, PageReportBuilder htmlReportBuilder)
         {
             List<AxeResultEnhancedItem> incomplete = new List<AxeResultEnhancedItem>();
             bool takeScreenshot = htmlReportBuilder.Options.ScreenshotIncomplete;
@@ -62,7 +62,7 @@ namespace Axe.HtmlReport
             return incomplete.ToArray();
         }
 
-        private AxeResultEnhancedItem[] GetPasses(AxeResult result, HtmlReportBuilder htmlReportBuilder)
+        private AxeResultEnhancedItem[] GetPasses(AxeResult result, PageReportBuilder htmlReportBuilder)
         {
             List<AxeResultEnhancedItem> passes = new List<AxeResultEnhancedItem>();
             bool takeScreenshot = htmlReportBuilder.Options.ScreenshotPasses;
@@ -74,7 +74,7 @@ namespace Axe.HtmlReport
             return passes.ToArray();
         }
 
-        private AxeResultEnhancedItem[] GetViolations(AxeResult result, HtmlReportBuilder htmlReportBuilder)
+        private AxeResultEnhancedItem[] GetViolations(AxeResult result, PageReportBuilder htmlReportBuilder)
         {
             List<AxeResultEnhancedItem> violations = new List<AxeResultEnhancedItem>();
             bool takeScreenshot = htmlReportBuilder.Options.ScreenshotViolations;
@@ -87,7 +87,7 @@ namespace Axe.HtmlReport
             return violations.ToArray();
         }
 
-        private AxeResultEnhancedNode[] GetEnhancedNodes(AxeResultNode[] nodes, HtmlReportBuilder htmlReportBuilder, bool takeScreenshot)
+        private AxeResultEnhancedNode[] GetEnhancedNodes(AxeResultNode[] nodes, PageReportBuilder htmlReportBuilder, bool takeScreenshot)
         {
             List<AxeResultEnhancedNode> axeResultNodeEnhanceds = new List<AxeResultEnhancedNode>();
             foreach (var n in nodes)
@@ -111,7 +111,7 @@ namespace Axe.HtmlReport
         /// * Weight of each passed and failed audit is based on impact of each axe rule: critical, seruous, moderate or minor
         /// * Incomplete rules are not calculated in the score
         /// </remarks>
-        private void GetScore()
+        protected override int GetScore()
         {
             int violationScore = 0;
             int passeScore = 0;
@@ -149,105 +149,11 @@ namespace Axe.HtmlReport
                 }
             }
             Scorebase = passeScore + violationScore;
-            _score = passeScore * 100 / Scorebase;
-            _scoreRotation = _score * 360 / 100;
+            int score = passeScore * 100 / Scorebase;
+            Score = score;
+            ScoreRotation = Score * 360 / 100;
+            return score;
         }
-
-
-        /// <summary>
-        /// The sum of score base
-        /// </summary>
-        public int Scorebase { get; set; }
-
-        private int? _score;
-        public int? Score
-        {
-            get
-            {
-                if (_score == null) GetScore(); return _score;
-            }
-            set
-            {
-                _score = value;
-            }
-        }
-
-        private int? _scoreRotation;
-
-        public int? ScoreRotation
-        {
-            get
-            {
-                if (_scoreRotation == null) GetScore(); return _scoreRotation;
-            }
-            set
-            {
-                _scoreRotation = value;
-            }
-        }
-
-        public string ScoreForegroundColor
-        {
-            get
-            {
-                var color = scoreToForegroundColor[0];
-                foreach(var score in scoreToForegroundColor)
-                {
-                    if(_score > score.Key)
-                    {
-                        color = score;
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                }
-                return color.Value;
-            }
-        }
-
-        public string ScoreBackgroundColor
-        {
-            get
-            {
-                var color = scoreToBackgroundColor[0];
-                foreach (var score in scoreToBackgroundColor)
-                {
-                    if (_score > score.Key)
-                    {
-                        color = score;
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                }
-                return color.Value;
-            }
-        }
-
-        private static KeyValuePair<int, string>[] scoreToForegroundColor = new KeyValuePair<int, string>[]
-        {
-            new (0, "490000"),
-            new (50, "970000"),
-            new (60, "ff8c00"),
-            new (70, "e09d00"),
-            new (80, "bab200"),
-            new (90, "33dd33"),
-        };
-
-        private static KeyValuePair<int, string>[] scoreToBackgroundColor = new KeyValuePair<int, string>[]
-{
-            new (0, "970000"),
-            new (50, "955200"),
-            new (60, "745200"),
-            new (70, "696400"),
-            new (80, "406d0d"),
-            new (90, "0d430d"),
-};
-
 
 
         /// <summary>
@@ -255,7 +161,7 @@ namespace Axe.HtmlReport
         /// </summary>
         /// <param name="impact">Acessibility impact: Critical, Serious, Moderate, Minor</param>
         /// <returns>Weight: 1, 3, 7, and 10 according to impact</returns>
-        private int ScorePerImpact(AxeResultItem resultItem)
+        internal static int ScorePerImpact(AxeResultItem resultItem)
         {
             var impact = resultItem.GetImpact();
 
