@@ -72,7 +72,7 @@ namespace Axe.HtmlReport
                     TableRowPageResult.AppendLine(rowTemplate.Replace("{{PageTitle}}", pageBuilder.Options.Title)
                         .Replace("{{PageUrl}}", pageBuilder.Result.Url)
                         .Replace("{{Score}}", pageBuilder.Result.Score.ToString())
-                        .Replace("{{ScoreColor}}", pageBuilder.Result.ScoreBackgroundColor)
+                        .Replace("{{ScoreColor}}", pageBuilder.Result.ScoreForegroundColor)
                         .Replace("{{ReportLink}}", subFolder + "/" + filename));
                 }
             }
