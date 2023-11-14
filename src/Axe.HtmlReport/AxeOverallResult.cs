@@ -13,6 +13,8 @@ namespace Axe.HtmlReport
 
         public List<AxePageResult> PageResults { get; set; } = new List<AxePageResult>();
 
+        internal Dictionary<string, ResultType> overallResults = new Dictionary<string, ResultType>();
+        internal Dictionary<string, int> rulePoints = new Dictionary<string, int>();
 
         public string Title { get; internal set; }
         public DateTime TimeStamp { get; internal set; }
@@ -27,12 +29,30 @@ namespace Axe.HtmlReport
         /// <returns></returns>
         protected override int GetScore()
         {
-            Dictionary<string, ResultType> overallResults = new Dictionary<string, ResultType>();
-            Dictionary<string, int> rulePoints = new Dictionary<string, int>();
+            overallResults = new Dictionary<string, ResultType>();
+            rulePoints = new Dictionary<string, int>();
 
-            foreach(var page in PageResults)
+            foreach (var page in PageResults)
             {
-                foreach(var pass in page.Passes)
+
+                foreach (var violation in page.Violations)
+                {
+                    var id = violation.Item.Id;
+                    overallResults[id] = ResultType.Violations;
+                    rulePoints[id] = AxePageResult.ScorePerImpact(violation.Item);
+                }
+
+                foreach (var incomplete in page.Incomplete)
+                {
+                    var id = incomplete.Item.Id;
+                    if (!overallResults.ContainsKey(id) || overallResults[id] == ResultType.Passes)
+                    {
+                        overallResults[id] = ResultType.Incomplete;
+                        rulePoints[id] = AxePageResult.ScorePerImpact(incomplete.Item);
+                    }
+                }
+
+                foreach (var pass in page.Passes)
                 {
                     var id = pass.Item.Id;
                     if (!overallResults.ContainsKey(id))
@@ -42,12 +62,6 @@ namespace Axe.HtmlReport
                     }
                 }
 
-                foreach(var violation in page.Violations)
-                {
-                    var id = violation.Item.Id;
-                    overallResults[id] = ResultType.Violations;
-                    rulePoints[id] = AxePageResult.ScorePerImpact(violation.Item);
-                }
             }
 
             int passed = 0;

@@ -135,6 +135,13 @@ namespace Axe.HtmlReport
             }
             foreach (var passed in this.Passes)
             {
+                if(this.Violations.FirstOrDefault(x=>x.Item.Id == passed.Item.Id) != null)
+                {
+                    //In this case, there are elements passed but other elements faied the.
+                    //we don't count check passed
+                    continue;
+                }
+
                 switch (mode)
                 {
                     case ScoringMode.Weighted:

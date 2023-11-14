@@ -9,7 +9,7 @@ namespace Axe.HtmlReport.Selenium
     public static class SeleniumHelper
     {
         /// <summary>
-        /// Initializes the builder contexte with a Selenium WebDriver.
+        /// Initializes the builder context with a Selenium WebDriver.
         /// WebDriver is used to take screenshots and other necessary manipulations to enrich report content.
         /// </summary>
         /// <param name="builder">HtmlReportBuilder object</param>
@@ -22,6 +22,14 @@ namespace Axe.HtmlReport.Selenium
             return builder;
         }
 
+
+        /// <summary>
+        /// Initializes the builder context with Selenium WebDriver.
+        /// </summary>
+        /// <param name="builder">Overall report builder</param>
+        /// <param name="driver">Selenium WebDriver</param>
+        /// <param name="title">Title of you application report</param>
+        /// <returns>PageReportBuilder object to analyze the current page.</returns>
         public static PageReportBuilder WithSelenium(this OverallReportBuilder builder, WebDriver driver, string? title)
         {
             var option = builder.Options.Clone();

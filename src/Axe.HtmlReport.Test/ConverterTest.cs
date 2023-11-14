@@ -52,15 +52,21 @@ namespace Axe.HtmlReport.Test
             using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);
             var defaultOptions = new PageReportOptions()
             {
-                HighlightColor = Color.LimeGreen,
+                HighlightColor = Color.OrangeRed,
                 HighlightThickness = 5,
-                ScoringMode = ScoringMode.Weighted,
+                UseAdvancedScreenshot= true,
+                ScoringMode = ScoringMode.NonWeighted,
                 Tags = Array.Empty<string>(),
                 Title = "AXA.FR"
             };
             var builder = new OverallReportBuilder().WithDefaultOptions(defaultOptions);
             //Analyze first page
             driver.Navigate().GoToUrl("https://www.axa.fr/");
+            try
+            {
+                driver.FindElement(By.Id("footer_tc_privacy_button")).Click();
+            }
+            catch { }
             builder.WithSelenium(driver, "Main Page").Build();
 
             //Analyze second page
@@ -74,6 +80,12 @@ namespace Axe.HtmlReport.Test
             //Demarche Inondation
             driver.Navigate().GoToUrl("https://www.axa.fr/assurance-habitation/demarches-inondation.html");
             builder.WithSelenium(driver, "Inondation").Build();
+
+            driver.Navigate().GoToUrl("https://www.axa.fr/pro/devis-assurance-professionnelle.html");
+            builder.WithSelenium(driver, "Devis Pro").Build();
+
+            driver.Navigate().GoToUrl("https://www.axa.fr/compte-bancaire.html");
+            builder.WithSelenium(driver, "Compte Bancaire").Build();
 
             string report = builder.Build().Export();
             Process.Start(new ProcessStartInfo(report) { UseShellExecute = true });

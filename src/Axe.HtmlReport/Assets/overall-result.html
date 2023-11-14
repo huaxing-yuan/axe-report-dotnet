@@ -14,7 +14,7 @@
             font-size: 14px;
             min-width: 800px;
             margin: 0px;
-            padding: 0px;
+            padding: 10px;
         }
 
         h1 {
@@ -25,7 +25,39 @@
             font-size: 36px;
         }
 
+
+        table {
+            border: 1px solid lightgray;
+            border-radius: 1em;
+            border-collapse: collapse;
+            background-color: white;
+            width: 90%;
+            overflow: hidden;
+            font-size: 16px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            background-color: #CCCCCC;
+            color: navy;
+        }
+
+        td {
+            padding: 12px;
+        }
+
+
         .navbar {
+            margin: 10px;
             background: #F1F1F1;
             margin: 10px 0px 0px 0px;
             border-radius: 10px;
@@ -33,83 +65,9 @@
             margin: 10px 0px;
         }
 
-        span.tag {
-            color: darkblue;
-        }
-
-        /* Used to show tags, standards */
-        div.regularition {
-            vertical-align: middle;
-            background-color: darkblue;
-            color: white;
-            border-radius: 5px;
-            padding: 4px;
-            font-size: 12px;
-            margin: 0px 2px;
-            display: inline-block;
-        }
-
-
-
-        th {
-            padding: 5px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .label {
-            background-color: gray;
-            color: white;
-            padding: 4px;
-            border-radius: 8px;
-            min-height: 16px;
-            min-width: 16px;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-
-        .fixedSize {
-            display: inline-block;
-            width: 70px;
-            text-align: center;
-            margin: 0px 10px 0px 0px;
-        }
 
         .right {
             float: right;
-        }
-
-
-
-        /* issue severity tag:critical, serious, moderate, minor*/
-        .label.critical {
-            background-color: maroon;
-            color: white;
-        }
-
-        .label.serious {
-            background-color: red;
-            color: white;
-        }
-
-        .label.moderate {
-            background-color: orange;
-            color: white;
-        }
-
-        .label.minor {
-            background-color: yellow;
-            color: black;
-        }
-
-
-        table.nospace{
-            border-collapse: collapse;
-        }
-
-        table.nospace td{
-            padding: 0px;
         }
 
         /* Go from zero to full opacity */
@@ -154,7 +112,7 @@
             display: block;
             position: absolute;
             /* (A2) SEGMENTS */
-            background: conic-gradient( #{{ScoreColor}} 0deg {{ScoreRotation}}deg, transparent {{ScoreRotation}}deg 360deg );
+            background: conic-gradient( #{{ScoreColor}} 0deg {{ScoreRotation}}deg, #cccccc {{ScoreRotation}}deg 360deg );
             transform: rotate(-{{ScoreRotation}}deg);
             opacity: 0;
             animation: rotate 1s 1 forwards;
@@ -188,6 +146,45 @@
             color: #{{ScoreBackgroundColor}};
         }
 
+        .progressbar {
+            position: relative;
+            max-width: 500px;
+            min-width: 100px;
+            width: 100%;
+            margin: auto 0;
+            height: 15px;
+            background: #cccccc;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        span.progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            transition: all .3s;
+            text-align: right;
+            font-size: 12px;
+            padding-right: 10px;
+            color: white;
+        }
+
+        span.Passes {
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: green;
+        }
+
+        span.Violations {
+            padding: 2px 4px;
+            border-radius: 4px;
+            background-color: maroon;
+            color: white;
+        }
+        
+
         /* Animation */
         @keyframes rotate {
             from {
@@ -216,10 +213,13 @@
     <div>
         <h1>Accessibility Report: Application {{Title}}</h1>
         <h3>Timestamp: {{TimeStamp}}</h3>
+        <h3>
+            &nbsp;
+        </h3>
     </div>
 </div>
 
-<h3>Web pages tested:</h3>
+<h2>Web pages tested:</h2>
 <table>
     <thead>
         <tr>
@@ -231,6 +231,17 @@
     </thead>
     <tbody>
         {{TableRowPageResult}}
+    </tbody>
+</table>
+
+
+<h2>Axe rules overview:</h2>
+<table>
+    <thead>
+        <tr>{{RowPageHeaderList}}</tr>
+    </thead>
+    <tbody>
+        {{RowRuleResults}}
     </tbody>
 </table>
 <body>

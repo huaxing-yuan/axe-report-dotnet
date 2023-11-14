@@ -72,6 +72,7 @@ namespace Axe.HtmlReport
                     TableRowPageResult.AppendLine(rowTemplate.Replace("{{PageTitle}}", pageBuilder.Options.Title)
                         .Replace("{{PageUrl}}", pageBuilder.Result.Url)
                         .Replace("{{Score}}", pageBuilder.Result.Score.ToString())
+                        .Replace("{{ScoreColor}}", pageBuilder.Result.ScoreBackgroundColor)
                         .Replace("{{ReportLink}}", subFolder + "/" + filename));
                 }
             }
@@ -82,9 +83,51 @@ namespace Axe.HtmlReport
                     .Replace("{{TableRowPageResult}}", TableRowPageResult.ToString())
                     .Replace("{{ScoreBackgroundColor}}", this.Result.ScoreBackgroundColor)
                     .Replace("{{ScoreColor}}", this.Result.ScoreForegroundColor)
-                    .Replace("{{ScoreRotation}}", this.Result.ScoreRotation.ToString())
-                    .Replace("{{TableRowPageResult}}", TableRowPageResult.ToString());
+                    .Replace("{{ScoreRotation}}", this.Result.ScoreRotation.ToString());
 
+
+            StringBuilder ruleTitles= new StringBuilder();
+            StringBuilder ruleResults = new StringBuilder();
+
+            //The header of the overall view table
+            ruleTitles.AppendLine("<th>Rule Id</th>");
+            foreach(var page in Result.PageResults)
+            {
+                ruleTitles.AppendLine($"<th>{page.Builder.Options.Title}</th>");               
+            }
+            ruleTitles.AppendLine($"<th>Overall</th>");
+
+            //The content of the overall view table
+            foreach (var rule in Result.overallResults.OrderBy(x=>x.Key))
+            {
+                var ruidId = rule.Key;
+                var rResult = rule.Value;
+                ruleResults.AppendLine($"<tr><td>{ruidId}</td>");
+                foreach (var page in Result.PageResults)
+                {
+                    if (page.Violations.FirstOrDefault(x => x.Item.Id == ruidId) != null)
+                    {
+                        ruleResults.AppendLine($"<td><span class='Violations'>Violations</span></td>");
+                    }
+                    else if (page.Incomplete.FirstOrDefault(x => x.Item.Id == ruidId) != null)
+                    {
+                        ruleResults.AppendLine($"<td><span class='Incomplele'>Incomplele</span></td>");
+                    }
+                    else if (page.Passes.FirstOrDefault(x=>x.Item.Id == ruidId) != null)
+                    {
+                        ruleResults.AppendLine($"<td><span class='Passes'>Passes</span></td>");
+                    }
+                    else
+                    {
+                        ruleResults.AppendLine($"<td><span class='Inapplicable'>Inapplicable</span></td>");
+                    }
+                }
+                ruleResults.AppendLine($"<td><span class='{rResult}'>{rResult}</span></td></tr>");
+            }
+
+
+            html = html.Replace("{{RowPageHeaderList}}", ruleTitles.ToString())
+                .Replace("{{RowRuleResults}}", ruleResults.ToString());
 
             string fullname = Path.Combine(path, fileName ?? "index.html");
             File.WriteAllText(fullname, html);
