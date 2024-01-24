@@ -1,0 +1,11 @@
+{
+  "id": "always-fail",
+  "evaluate": "${always-fail-evaluate.js}",
+  "metadata": {
+    "impact": "serious",
+    "messages": {
+      "pass": "There is no way to pass.",
+      "fail": "It will always fail."
+    }
+  }
+}

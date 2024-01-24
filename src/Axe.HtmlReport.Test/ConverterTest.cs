@@ -51,7 +51,8 @@ namespace Axe.HtmlReport.Test
         {
             //Execute mon test automatisé
             using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);
-            driver.Navigate().GoToUrl("https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/Examples/G141.Fail.html");
+            driver.Navigate().GoToUrl("https://www.axa.fr");
+            //driver.Navigate().GoToUrl("https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/Examples/G141.Fail.html");
             try
             {
                 driver.FindElement(By.Id("footer_tc_privacy_button")).Click();

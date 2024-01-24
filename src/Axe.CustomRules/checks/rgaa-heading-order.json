@@ -1,5 +1,5 @@
 {
-  "id": "rgaa-header-order",
+  "id": "rgaa-heading-order",
   "evaluate": "${rgaa-heading-order-evaluate.js}",
   "metadata": {
     "messages": {

@@ -1,0 +1,14 @@
+﻿{
+  "id": "rgaa-1.1",
+  "impact": "critical",
+  "metadata": {
+    "description": "[RGAA 1.1] Chaque image porteuse d’information a-t-elle une alternative textuelle ?",
+    "help": "Le test comprend les tests suivants: 1.1.1 (image), 1.1.2 (zone d'image'), 1.1.3 (bouton de type image), 1.1.5 (svg), 1.1.6 (object type image), 1.1.7 (embed type image)",
+    "helpUrl": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#1.1"
+  },
+  "selector": "img, [role=\"img\"], area, button[type=\"image\"], svg, object[type|=\"image/\"], embed[type|=\"image/\"]",
+  "any": [],
+  "all": [ "img-has-alt" ],
+  "none": [],
+  "tags": [ "wcag111", "rgaa-1-1", "rgaa4" ]
+}
