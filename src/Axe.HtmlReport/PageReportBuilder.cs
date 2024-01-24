@@ -1,4 +1,5 @@
 ﻿using Deque.AxeCore.Commons;
+using Newtonsoft.Json.Linq;
 using System.IO.Compression;
 using System.Net;
 using System.Reflection;
@@ -16,6 +17,13 @@ namespace Axe.HtmlReport
     public class PageReportBuilder
     {
         public PageReportOptions Options { get; set; }
+
+
+        /// <summary>
+        /// Provide a custom axe configure (https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure).
+        /// If provided, the configuration will be used. If not provided, the default axe configuration will be used.
+        /// </summary>
+        public JObject ? Config { get; set; }
 
         public bool CanGetScreenshot => GetScreenshot != EmptyGetScreenshot && GetScreenshot != null;
 
@@ -46,6 +54,19 @@ namespace Axe.HtmlReport
             return this;
         }
 
+        public PageReportBuilder WithConfig(JObject config)
+        {
+            Config = config;
+            return this;
+        }
+
+        public PageReportBuilder WithConfig(string configFile)
+        {
+            var content = File.ReadAllText(configFile);
+            Config = JObject.Parse(content);
+            return this;
+        }
+
         private byte[]? EmptyGetScreenshot(AxeResultNode node, PageReportOptions options)
         {
             return null;
@@ -69,7 +90,7 @@ namespace Axe.HtmlReport
         /// <returns></returns>
         public PageReportBuilder Build()
         {
-            var result = this.Analyze();
+            var result = this.Analyze(Config);
             Result = new AxePageResult(result, this);
             return this;
         }
@@ -227,16 +248,16 @@ namespace Axe.HtmlReport
         public AnalyzeDelegate Analyze { get; internal set; }
 
         public delegate byte[]? GetScreenshotDelegate(AxeResultNode node, PageReportOptions options);
-        public delegate AxeResult AnalyzeDelegate();
+        public delegate AxeResult AnalyzeDelegate(JObject? axeConfig);
 
 
         /// <summary>
         /// This is the default Emoty delegate for Analyze. without calling WithSelenium or WithPlaywright, analyze will be empty.
         /// </summary>
         /// <returns></returns>
-        private AxeResult EmptyAnalyzeDelegate()
+        private AxeResult EmptyAnalyzeDelegate(JObject config)
         {
-            throw new System.NotImplementedException("Test Framework Not specified. Please pass .WithSelenium(driver) or .WithPlaywright(context) before ");
+            throw new System.NotImplementedException("Test Framework Not specified. Please pass .WithSelenium(driver) or .WithPlaywright(context) before calling analysis.");
         }
 
     }

@@ -156,6 +156,10 @@ namespace Axe.HtmlReport
                 }
             }
             Scorebase = passeScore + violationScore;
+            if(Scorebase == 0)
+            {
+                return 0;
+            }
             int score = passeScore * 100 / Scorebase;
             Score = score;
             ScoreRotation = Score * 360 / 100;

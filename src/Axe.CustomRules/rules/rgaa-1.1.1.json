@@ -1,0 +1,14 @@
+﻿{
+  "id": "rgaa-1.1.1",
+  "impact": "critical",
+  "metadata": {
+    "description": "[RGAA 1.1.1] Chaque image porteuse d’information a-t-elle une alternative textuelle ?",
+    "help": "Chaque image porteuse d’information a-t-elle une alternative textuelle",
+    "helpUrl": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#1.1.1"
+  },
+  "selector": "img, [role=\"img\"], area, button[type=\"image\"], svg",
+  "any": [],
+  "all": [ "img-has-alt" ],
+  "none": [],
+  "tags": [ "wcag111", "rgaa-1-1", "rgaa4" ]
+}

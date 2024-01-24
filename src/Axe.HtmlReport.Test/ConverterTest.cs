@@ -21,7 +21,7 @@ namespace Axe.HtmlReport.Test
         {
             //Execute mon test automatisé
             using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);
-            driver.Navigate().GoToUrl("https://www.axa.fr/");
+            driver.Navigate().GoToUrl("https://www.axa.fr");
             try
             {
                 driver.FindElement(By.Id("footer_tc_privacy_button")).Click();
@@ -47,6 +47,38 @@ namespace Axe.HtmlReport.Test
         }
 
         [Test]
+        public void CustomRulesRgaa()
+        {
+            //Execute mon test automatisé
+            using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);
+            driver.Navigate().GoToUrl("https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/Examples/G141.Fail.html");
+            try
+            {
+                driver.FindElement(By.Id("footer_tc_privacy_button")).Click();
+            }
+            catch { }
+
+            var sw = Stopwatch.StartNew();
+
+            //Effectuer une analyse d'accessibilité
+            var filename = new PageReportBuilder()
+                .WithOptions(new PageReportOptions()
+                {
+                    HighlightColor = Color.LimeGreen,
+                    HighlightThickness = 5,
+                    ScoringMode = ScoringMode.Weighted,
+                    Tags = new string[] { "rgaa4" },
+                })
+                .WithSelenium(driver)
+                .WithConfig("axe-rgaa-extension.json")
+                .Build()
+                .Export();
+            Debug.WriteLine($"Report generated in {sw.Elapsed.TotalSeconds} seconds");
+            Process.Start(new ProcessStartInfo(filename) { UseShellExecute = true });
+        }
+
+
+        [Test]
         public void AuditForApplication()
         {
             using var driver = BrowserFactory.GetDriver(AxaFrance.WebEngine.Platform.Windows, BrowserType.ChromiumEdge);
@@ -54,9 +86,9 @@ namespace Axe.HtmlReport.Test
             {
                 HighlightColor = Color.OrangeRed,
                 HighlightThickness = 5,
-                UseAdvancedScreenshot= true,
+                UseAdvancedScreenshot = true,
                 ScoringMode = ScoringMode.NonWeighted,
-                Tags = Array.Empty<string>(),
+                //Tags = Array.Empty<string>(),
                 Title = "AXA.FR"
             };
             var builder = new OverallReportBuilder().WithDefaultOptions(defaultOptions);

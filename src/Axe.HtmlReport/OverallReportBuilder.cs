@@ -91,6 +91,7 @@ namespace Axe.HtmlReport
 
             //The header of the overall view table
             ruleTitles.AppendLine("<th>Rule Id</th>");
+            ruleTitles.AppendLine("<th>Tags</th>");
             foreach(var page in Result.PageResults)
             {
                 ruleTitles.AppendLine($"<th>{page.Builder.Options.Title}</th>");               
@@ -102,7 +103,9 @@ namespace Axe.HtmlReport
             {
                 var ruidId = rule.Key;
                 var rResult = rule.Value;
+                var tags = GetTagsByRule(ruidId);
                 ruleResults.AppendLine($"<tr><td>{ruidId}</td>");
+                ruleResults.AppendLine($"<td>{tags}</td>");
                 foreach (var page in Result.PageResults)
                 {
                     if (page.Violations.FirstOrDefault(x => x.Item.Id == ruidId) != null)
@@ -122,7 +125,8 @@ namespace Axe.HtmlReport
                         ruleResults.AppendLine($"<td><span class='Inapplicable'>Inapplicable</span></td>");
                     }
                 }
-                ruleResults.AppendLine($"<td><span class='{rResult}'>{rResult}</span></td></tr>");
+                ruleResults.AppendLine($"<td><span class='{rResult}'>{rResult}</span></td>");
+                ruleResults.AppendLine("</tr>");
             }
 
 
@@ -150,6 +154,12 @@ namespace Axe.HtmlReport
                     // it will be a bug if new output format is not yet implemented.
                     throw new NotImplementedException($"Output format is not yet supported {Options.OutputFormat}");
             }
+        }
+
+        private object GetTagsByRule(string ruidId)
+        {
+
+            return "tag";
         }
 
         public PageReportOptions Options

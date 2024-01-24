@@ -1,0 +1,14 @@
+﻿{
+  "id": "rgaa-5.1.1",
+  "impact": "moderate",
+  "metadata": {
+    "description": "[RGAA 5.1.1] Chaque tableau de données complexe a-t-il un résumé ?",
+    "help": "Pour chaque tableau de données complexe, un résumé est-il disponible ?",
+    "helpUrl": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#5.1"
+  },
+  "selector": "table, [role=\"table\"]",
+  "any": [],
+  "all": [ "table-has-resume" ],
+  "none": [],
+  "tags": [ "wcag131", "rgaa-5-1", "rgaa4" ]
+}

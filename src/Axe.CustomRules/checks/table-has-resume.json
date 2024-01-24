@@ -1,0 +1,10 @@
+{
+  "id": "table-has-resume",
+  "evaluate": "${table-has-resume-evaluate.js}",
+  "metadata": {
+    "messages": {
+      "pass": "Pour chaque tableau de données complexe, un résumé est-il disponible ? ",
+      "fail": "Pour chaque tableau de données complexe, un résumé est-il disponible ? "
+    }
+  }
+}

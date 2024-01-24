@@ -1,4 +1,6 @@
 ﻿using Deque.AxeCore.Commons;
+using Deque.AxeCore.Selenium;
+using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using SkiaSharp;
 using System.Drawing;
@@ -18,7 +20,7 @@ namespace Axe.HtmlReport.Selenium
         public static PageReportBuilder WithSelenium(this PageReportBuilder builder, WebDriver driver)
         {
             builder.GetScreenshot = (node, options) => ScreenShot(driver, node, options);
-            builder.Analyze = () => Analyze(builder, driver);
+            builder.Analyze = (JObject? config) => Analyze(builder, config, driver);
             return builder;
         }
 
@@ -48,16 +50,19 @@ namespace Axe.HtmlReport.Selenium
             return pageReportBuilder;
         }
 
-        private static AxeResult Analyze(PageReportBuilder builder, WebDriver driver)
+
+        private static AxeResult Analyze(PageReportBuilder builder, JObject? config, WebDriver driver)
         {
-            Deque.AxeCore.Selenium.AxeBuilder axeBuilder = new Deque.AxeCore.Selenium.AxeBuilder(driver);
+            AxeExtendedBuilder axeBuilder = new AxeExtendedBuilder(driver);
             if (builder.Options.Tags.Any())
             {
                 axeBuilder.WithTags(builder.Options.Tags.ToArray());
             }
+            axeBuilder.WithAxeConfig(config);
             var result = axeBuilder.Analyze();
             return result;
         }
+
 
         /// <summary>
         /// Takes the screenshot. this function will be called by <see cref="PageReportBuilder.GetScreenshot" delegation/>
@@ -107,10 +112,17 @@ namespace Axe.HtmlReport.Selenium
                 var xPath = node.XPath?.Selector;
 
                 //find given element
-                element = driver.FindElement(By.CssSelector(cssSelector));
-                if (element == null)
+                try
                 {
-                    element = driver.FindElement(By.XPath(xPath));
+                    element = driver.FindElement(By.CssSelector(cssSelector));
+                    if (element == null)
+                    {
+                        element = driver.FindElement(By.XPath(xPath));
+                    }
+                }catch(Exception ex)
+                {
+                    //sometimes the cssSelector provided by axe can not be used by selenium.
+                    //in this case can't make screenshot on the element.
                 }
             }
 

@@ -1,0 +1,11 @@
+{
+  "id": "img-has-alt",
+  "evaluate": "${img-has-alt-evaluate.js}",
+  "metadata": {
+    "impact": "serious",
+    "messages": {
+      "pass": "`<img>` tag or element with `role=\"img\"` must have one of following attribute: `aria-labelledby`, `aria-label`, `alt` or `title`",
+      "fail": "`<img>` tag or element with `role=\"img\"` must have one of following attribute: `aria-labelledby`, `aria-label`, `alt` or `title`"
+    }
+  }
+}

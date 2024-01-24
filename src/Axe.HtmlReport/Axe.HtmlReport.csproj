@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Deque.AxeCore.Commons" Version="4.8.0" />
+    <PackageReference Include="Deque.AxeCore.Commons" Version="4.8.1" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,10 @@
+{
+  "id": "rgaa-header-order",
+  "evaluate": "${rgaa-heading-order-evaluate.js}",
+  "metadata": {
+    "messages": {
+      "pass": "Pour chaque tableau de données complexe, un résumé est-il disponible ? ",
+      "fail": "Pour chaque tableau de données complexe, un résumé est-il disponible ? "
+    }
+  }
+}
