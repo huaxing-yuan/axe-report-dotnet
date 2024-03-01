@@ -10,5 +10,5 @@
   "any": [],
   "all": [ "img-has-alt" ],
   "none": [],
-  "tags": [ "wcag111", "rgaa-1-1", "rgaa4" ]
+  "tags": [ "wcag111", "rgaa-1-1", "rgaa" ]
 }

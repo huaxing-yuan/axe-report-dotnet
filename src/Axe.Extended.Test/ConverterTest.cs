@@ -69,10 +69,10 @@ namespace Axe.Extended.Test
                     HighlightColor = Color.LimeGreen,
                     HighlightThickness = 5,
                     ScoringMode = ScoringMode.Weighted,
-                    Tags = new string[] { "rgaa4" },
+                    //Tags = new string[] { "rgaa*" },
                 })
                 .WithSelenium(driver)
-                .WithConfig("axe-rgaa-extension.json")
+                .WithRgaaExtension()
                 .Build()
                 .Export();
             Debug.WriteLine($"Report generated in {sw.Elapsed.TotalSeconds} seconds");

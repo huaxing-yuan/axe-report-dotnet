@@ -71,7 +71,7 @@
       ],
       "none": [],
       "tags": [
-        "rgaa4"
+        "test"
       ]
     },
     {
@@ -89,18 +89,18 @@
       ],
       "none": [],
       "tags": [
-        "rgaa4"
+        "test"
       ]
     },
     {
-      "id": "rgaa-1.1.1",
+      "id": "rgaa-1.1",
       "impact": "critical",
       "metadata": {
-        "description": "[RGAA 1.1.1] Chaque image porteuse d’information a-t-elle une alternative textuelle ?",
-        "help": "Chaque image porteuse d’information a-t-elle une alternative textuelle",
-        "helpUrl": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#1.1.1"
+        "description": "[RGAA 1.1] Chaque image porteuse d’information a-t-elle une alternative textuelle ?",
+        "help": "Le test comprend les tests suivants: 1.1.1 (image), 1.1.2 (zone d'image'), 1.1.3 (bouton de type image), 1.1.5 (svg), 1.1.6 (object type image), 1.1.7 (embed type image)",
+        "helpUrl": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#1.1"
       },
-      "selector": "img, [role=\"img\"], area, button[type=\"image\"], svg",
+      "selector": "img, [role=\"img\"], area, button[type=\"image\"], svg, object[type|=\"image/\"], embed[type|=\"image/\"]",
       "any": [],
       "all": [
         "img-has-alt"
@@ -109,7 +109,7 @@
       "tags": [
         "wcag111",
         "rgaa-1-1",
-        "rgaa4"
+        "rgaa"
       ]
     },
     {
@@ -128,8 +128,8 @@
       "none": [],
       "tags": [
         "wcag131",
-        "rgaa-5-1",
-        "rgaa4"
+        "rgaa-5-1-1",
+        "rgaa"
       ]
     },
     {
@@ -138,8 +138,8 @@
       "impact": "moderate",
       "selector": "h1, h2, h3, h4, h5, h6",
       "tags": [
-        "rgaa-9-1",
-        "rgaa4"
+        "rgaa-9-1-1",
+        "rgaa"
       ],
       "metadata": {
         "description": "[RGAA 9.1.1] Dans chaque page web, la hiérarchie entre les titres est-elle pertinente ?",

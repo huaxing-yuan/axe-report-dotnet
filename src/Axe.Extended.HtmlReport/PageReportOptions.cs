@@ -78,7 +78,9 @@ namespace Axe.Extended.HtmlReport
         /// To get the complete list of all tags, refer to: https://www.deque.com/axe/core-documentation/api-documentation/#api-notes
         /// Leaving Tag empty means all rules will be tested.
         /// </summary>
-        public IEnumerable<string> Tags { get; set; } = new string[]
+        public IEnumerable<string> Tags { get; set; } = new string[] { };
+
+        public static readonly string[] WCAGTags = new string[]
         {
             "wcag2a", "wcag2aa", "wcag2aaa", "wcag21a", "wcag21aa", "wcag22aa", "EN-301-549", "wcag***"
         };

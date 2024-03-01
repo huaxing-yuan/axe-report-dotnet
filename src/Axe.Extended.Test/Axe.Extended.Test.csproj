@@ -1,22 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <IsPublishable>False</IsPublishable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="axe-rgaa-extension.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="axe-rgaa-extension.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AxaFrance.WebEngine.Web" Version="1.1.34" />

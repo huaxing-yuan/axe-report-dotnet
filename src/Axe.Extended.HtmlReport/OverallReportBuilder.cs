@@ -55,8 +55,8 @@ namespace Axe.Extended.HtmlReport
             int sequence = 1;
 
             //export the overallpage
-            var html = PageReportBuilder.GetHtmlTemplate("overall-result.html");
-            var rowTemplate = PageReportBuilder.GetHtmlTemplate("overall-tablerow.html");
+            var html = PageReportBuilder.GetRessource("overall-result.html");
+            var rowTemplate = PageReportBuilder.GetRessource("overall-tablerow.html");
             var TableRowPageResult = new StringBuilder();
             
             //export each subpages and generation of 

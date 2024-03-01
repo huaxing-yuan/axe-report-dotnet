@@ -3,7 +3,7 @@
   "reviewOnFail": false,
   "impact": "moderate",
   "selector": "h1, h2, h3, h4, h5, h6",
-  "tags": [ "rgaa-9-1", "rgaa4" ],
+  "tags": [ "rgaa-9-1-1", "rgaa" ],
   "metadata": {
     "description": "[RGAA 9.1.1] Dans chaque page web, la hiérarchie entre les titres est-elle pertinente ?",
     "help": "Dans chaque page web, la hiérarchie entre les titres est-elle pertinente",

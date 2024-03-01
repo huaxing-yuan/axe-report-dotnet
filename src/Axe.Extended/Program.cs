@@ -49,7 +49,7 @@ namespace Axe.Extended
             }
 
             //write the new axeconfig.json file
-            File.WriteAllText("../../../../Axe.Extended.Test/axe-rgaa-extension.json", axeConfig.ToString());
+            File.WriteAllText("../../../../Axe.Extended.HtmlReport/Assets/axe-rgaa-extension.json", axeConfig.ToString());
 
         }
     }

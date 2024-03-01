@@ -54,9 +54,29 @@ namespace Axe.Extended.HtmlReport
             return this;
         }
 
+        /// <summary>
+        /// Initilaize axe-core engine with custom configuration.
+        /// </summary>
+        /// <param name="config">axe costom configuration object</param>
+        /// <returns></returns>
         public PageReportBuilder WithConfig(JObject config)
         {
             Config = config;
+            return this;
+        }
+
+        /// <summary>
+        /// Initilaize axe-core engine with customed RGAA rules.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This method is not compatible with other <see cref="WithConfig(JObject)"/> method.
+        /// </remarks>
+        public PageReportBuilder WithRgaaExtension()
+        {
+            var content = GetRessource("axe-rgaa-extension.json");
+            Config = JObject.Parse(content);
             return this;
         }
 
@@ -117,7 +137,7 @@ namespace Axe.Extended.HtmlReport
             string passes = GenerateRuleSection(Result.Passes, path);
             string incomplete = GenerateRuleSection(Result.Incomplete, path);
             string inapplicable = GenerateRuleSection(Result.Inapplicable, path);
-            string html = GetHtmlTemplate("page-result.html");
+            string html = GetRessource("page-result.html");
             html = html.Replace("{{Title}}", Options.Title)
                 .Replace("{{PageUrl}}", Result.Url)
                 .Replace("{{TimeStamp}}", Result.AxeResult.Timestamp.ToString())
@@ -158,7 +178,7 @@ namespace Axe.Extended.HtmlReport
             }
         }
 
-        internal static string GetHtmlTemplate(string filename)
+        internal static string GetRessource(string filename)
         {
             //read content from Embeded Resource `Assets/index.html`
             var assembly = typeof(PageReportBuilder).Assembly;
@@ -166,7 +186,8 @@ namespace Axe.Extended.HtmlReport
             using var stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
                 throw new Exception($"Unable to find resource {resourceName} in assembly {assembly.FullName}");
-            return new StreamReader(stream).ReadToEnd();
+            using StreamReader reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
 
 
@@ -181,14 +202,14 @@ namespace Axe.Extended.HtmlReport
         {
 
             StringBuilder overall = new StringBuilder();
-            var template = GetHtmlTemplate("rule-part.html");
+            var template = GetRessource("rule-part.html");
             foreach (var item in items)
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (var node in item.Nodes)
                 {
                     //generate node (occurances of rule)
-                    var nodeTemplate = GetHtmlTemplate("node-part.html");
+                    var nodeTemplate = GetRessource("node-part.html");
                     var cssSelector = node.Node.Target;
                     var xpath = node.Node.XPath;
                     var display = node.Screenshot != null ? "block" : "none";
@@ -231,7 +252,7 @@ namespace Axe.Extended.HtmlReport
                 var sb = new StringBuilder();
                 foreach (AxeResultCheck item in any)
                 {
-                    var template = GetHtmlTemplate("check-part.html")
+                    var template = GetRessource("check-part.html")
                         .Replace("{{CheckId}}", item.Id)
                         .Replace("{{Impact}}", item.Impact)
                         .Replace("{{Message}}", WebUtility.HtmlEncode(item.Message))
