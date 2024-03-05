@@ -178,7 +178,8 @@ namespace Axe.Extended.HtmlReport
 
             if (impact == null)
             {
-                throw new ArgumentNullException($"Can not identify the impact of from current Item: {resultItem.Id}");
+                //if there is no impact, we consider it as moderate
+                return 3;
             }
             switch (impact.ToLower())
             {

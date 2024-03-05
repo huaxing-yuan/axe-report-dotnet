@@ -29,7 +29,10 @@ namespace Axe.Extended.HtmlReport
             return this;
         }
 
-        //Build OverallResult
+        /// <summary>
+        /// Build overall report from scanned pages which are built by PageReportBuilder.
+        /// </summary>
+        /// <returns></returns>
         public OverallReportBuilder Build()
         {
             AxeOverallResult overallResult = new AxeOverallResult()
@@ -45,12 +48,21 @@ namespace Axe.Extended.HtmlReport
                 }
             }
             this.Result = overallResult;
+            hasBuilt = true;
             return this;
         }
 
-        
+        bool hasBuilt = false;
+
+        /// <summary>
+        /// Export overall report to HTML or Zip format.
+        /// </summary>
+        /// <param name="fileName">the filename of export report, default value "index.html"</param>
+        /// <returns>the complete path of report</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public string Export(string? fileName = null)
         {
+            if (!hasBuilt) Build();
             string path = Options.OutputFolder ?? Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             int sequence = 1;
 
