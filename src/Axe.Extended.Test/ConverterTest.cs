@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Xml.Serialization;
+using Platform = AxaFrance.WebEngine.Platform;
 
 namespace Axe.Extended.Test
 {
@@ -79,6 +80,21 @@ namespace Axe.Extended.Test
             Process.Start(new ProcessStartInfo(filename) { UseShellExecute = true });
         }
 
+        [Test]
+        public void MySuperUnitTest()
+        {
+            using var driver = BrowserFactory.GetDriver(Platform.Windows, BrowserType.ChromiumEdge);
+            driver.Navigate().GoToUrl("https://www.axa.fr");
+            /*
+             * Vos 200 lignes de script automatisé existant
+            */
+            var report = new PageReportBuilder()    //Instancier un builder
+                .WithSelenium(driver)               //passer le driver Selenium
+                .Build()                            //analyser le page
+                .Export();                          //générer le rapport
+
+            Process.Start(new ProcessStartInfo(report) { UseShellExecute = true });
+        }
 
         [Test]
         public void AuditForApplication()
@@ -88,6 +104,7 @@ namespace Axe.Extended.Test
             {
                 HighlightColor = Color.OrangeRed,
                 HighlightThickness = 5,
+                ShowRGAATags = true,
                 UseAdvancedScreenshot = true,
                 ScoringMode = ScoringMode.NonWeighted,
                 //Tags = Array.Empty<string>(),
@@ -105,6 +122,11 @@ namespace Axe.Extended.Test
 
             //Analyze second page
             driver.Navigate().GoToUrl("https://www.axa.fr/pro.html");
+            try
+            {
+                driver.FindElement(By.Id("footer_tc_privacy_button")).Click();
+            }
+            catch { }
             builder.WithSelenium(driver, "Pro").Build();
 
             //Analyze third page

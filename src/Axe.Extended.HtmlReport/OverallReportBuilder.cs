@@ -113,22 +113,32 @@ namespace Axe.Extended.HtmlReport
             //The content of the overall view table
             foreach (var rule in Result.overallResults.OrderBy(x=>x.Key))
             {
-                var ruidId = rule.Key;
+                var ruleId = rule.Key;
                 var rResult = rule.Value;
-                var tags = GetTagsByRule(ruidId);
-                ruleResults.AppendLine($"<tr><td>{ruidId}</td>");
-                ruleResults.AppendLine($"<td>{tags}</td>");
+                ruleResults.AppendLine($"<tr><td>{ruleId}</td>");
+                
+                //Add tags
+                ruleResults.AppendLine($"<td>");
+                if (options.ShowRGAATags)
+                {
+                    var rgaaTags = ruleId.GetTagsByRule();
+                    foreach (var tag in rgaaTags)
+                    {
+                        ruleResults.AppendLine($"<span class='tag'>RGAA {tag}</span>");
+                    }
+                }
+                ruleResults.AppendLine($"</td>");
                 foreach (var page in Result.PageResults)
                 {
-                    if (page.Violations.FirstOrDefault(x => x.Item.Id == ruidId) != null)
+                    if (page.Violations.FirstOrDefault(x => x.Item.Id == ruleId) != null)
                     {
                         ruleResults.AppendLine($"<td><span class='Violations'>Violations</span></td>");
                     }
-                    else if (page.Incomplete.FirstOrDefault(x => x.Item.Id == ruidId) != null)
+                    else if (page.Incomplete.FirstOrDefault(x => x.Item.Id == ruleId) != null)
                     {
                         ruleResults.AppendLine($"<td><span class='Incomplele'>Incomplele</span></td>");
                     }
-                    else if (page.Passes.FirstOrDefault(x=>x.Item.Id == ruidId) != null)
+                    else if (page.Passes.FirstOrDefault(x=>x.Item.Id == ruleId) != null)
                     {
                         ruleResults.AppendLine($"<td><span class='Passes'>Passes</span></td>");
                     }
@@ -166,12 +176,6 @@ namespace Axe.Extended.HtmlReport
                     // it will be a bug if new output format is not yet implemented.
                     throw new NotImplementedException($"Output format is not yet supported {Options.OutputFormat}");
             }
-        }
-
-        private object GetTagsByRule(string ruidId)
-        {
-
-            return "tag";
         }
 
         public PageReportOptions Options

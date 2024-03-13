@@ -20,6 +20,19 @@ namespace Axe.Extended.HtmlReport
             return impact;
         }
 
+        internal static IEnumerable<string> GetTagsByRule(this string ruleId)
+        {
+
+            if (AxeRgaaMapping.Mapping.ContainsKey(ruleId))
+            {
+                return AxeRgaaMapping.Mapping[ruleId];
+            }
+            else
+            {
+                return Array.Empty<string>();
+            }
+        }
+
 
     }
 }

@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -31,7 +30,7 @@
             border-radius: 1em;
             border-collapse: collapse;
             background-color: white;
-            width: 90%;
+            width: 100%;
             overflow: hidden;
             font-size: 16px;
         }
@@ -118,6 +117,13 @@
             animation: rotate 1s 1 forwards;
         }
 
+        span.tag {
+            background-color: darkblue;
+            padding: 2px 4px;
+            color: white;
+            font-size: 12px;
+        }
+
         .donut-container {
             width: 100px;
             height: 100px;
@@ -199,48 +205,51 @@
 
     </style>
 </head>
-<div class="navbar">
-    <div class='donut-container'>
-        <div class='donut'>
-        </div>
-        <div class="donut-label">
-            <p class="center">
-                {{Score}}
-            </p>
-        </div>
-    </div>
-    <div>
-        <h1>Accessibility Report: Application {{Title}}</h1>
-        <h3>Test performed at: {{TimeStamp}}</h3>
-        <h3>
-            &nbsp;
-        </h3>
-    </div>
-</div>
-
-<h2>Web pages tested:</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Page</th>
-            <th>Url</th>
-            <th>Score</th>
-            <th>Page Report</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{TableRowPageResult}}
-    </tbody>
-</table>
-
-
-<h2>Axe rules overview:</h2>
-<table>
-    <thead>
-        <tr>{{RowPageHeaderList}}</tr>
-    </thead>
-    <tbody>
-        {{RowRuleResults}}
-    </tbody>
-</table>
 <body>
+    <div class="navbar" role="banner">
+        <div class='donut-container' aria-label="Overall score of the application: {{Score}} percent.">
+            <div class='donut' role="none">
+            </div>
+            <div class="donut-label" role="none">
+                <p class="center">
+                    {{Score}}
+                </p>
+            </div>
+        </div>
+        <div>
+            <h1>Accessibility Report: Application {{Title}}</h1>
+            <h3>Test performed at: {{TimeStamp}}</h3>
+        </div>
+    </div>
+    <article>
+        <h2>Web pages tested:</h2>
+        <p id="tblDescPagesTested">Pages tested during the uesr journey testing.</p>
+        <table aria-describedby="tblDescPagesTested">
+            <thead>
+                <tr>
+                    <th>Page</th>
+                    <th>Url</th>
+                    <th>Score</th>
+                    <th>Page Report</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{TableRowPageResult}}
+            </tbody>
+        </table>
+    </article>
+    <article>
+        <h2>Axe rules overview:</h2>
+        <p id="tblDescRulesList">A list of applicable rules and the result on each pages. Last column resumes the overall result for the rule.</p>
+        <table aria-describedby="tblDescRulesList">
+            <thead>
+                <tr>{{RowPageHeaderList}}</tr>
+            </thead>
+            <tbody>
+                {{RowRuleResults}}
+            </tbody>
+        </table>
+    </article>
+</body>
+
+</html>

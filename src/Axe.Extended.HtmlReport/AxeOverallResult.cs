@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Axe.Extended.HtmlReport
 {
+    /// <summary>
+    /// Represents the overall result of the application. It contains the result of all tested pages.
+    /// </summary>
     public class AxeOverallResult : BaseResult
     {
 
@@ -16,7 +19,15 @@ namespace Axe.Extended.HtmlReport
         internal Dictionary<string, ResultType> overallResults = new Dictionary<string, ResultType>();
         internal Dictionary<string, int> rulePoints = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Title of the application showing in the report
+        /// </summary>
         public string Title { get; internal set; }
+        
+        
+        /// <summary>
+        /// The time when the report is generated
+        /// </summary>
         public DateTime TimeStamp { get; internal set; }
 
 

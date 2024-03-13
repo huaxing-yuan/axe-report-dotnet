@@ -28,6 +28,11 @@ namespace Axe.Extended.HtmlReport
         public Language ReportLanguage { get; set; } = Language.English;
 
         /// <summary>
+        /// In the report, show the RGAA tags (equivalent RGAA Test Methdologie) for each rule. Default is true.
+        /// </summary>
+        public bool ShowRGAATags { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets the value indicating if advanced screenshot should be used. Default is true.
         /// </summary>
         /// <remarks>
@@ -74,13 +79,18 @@ namespace Axe.Extended.HtmlReport
         public string Title { get; set; } = "Accessibility Report";
 
         /// <summary>
-        /// Tags used to be audited by the tool. Default Value: A and AA rules defined in WCAG 2.0, 2.1 and 2.2 and EN-301-549.
+        /// Tags used to be audited by the tool. Default Value: [empty], all rules will be tested.
         /// To get the complete list of all tags, refer to: https://www.deque.com/axe/core-documentation/api-documentation/#api-notes
         /// Leaving Tag empty means all rules will be tested.
         /// </summary>
         public IEnumerable<string> Tags { get; set; } = new string[] { };
 
-        public static readonly string[] WCAGTags = new string[]
+
+
+        /// <summary>
+        /// A and AA rules defined in WCAG 2.0, 2.1 and 2.2 and EN-301-549
+        /// </summary>
+        public static readonly string[] WcagAATags = new string[]
         {
             "wcag2a", "wcag2aa", "wcag2aaa", "wcag21a", "wcag21aa", "wcag22aa", "EN-301-549", "wcag***"
         };

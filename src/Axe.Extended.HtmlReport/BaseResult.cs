@@ -6,13 +6,21 @@ using System.Threading.Tasks;
 
 namespace Axe.Extended.HtmlReport
 {
+
+    /// <summary>
+    /// Base class for results: AxePageResult, AxeOverallResult
+    /// </summary>
     public abstract class BaseResult
     {
 
+        /// <summary>
+        /// Gets the score from test result.
+        /// </summary>
+        /// <returns>0 to 100</returns>
         protected abstract int GetScore();
 
         /// <summary>
-        /// The sum of score base
+        /// The sum of score base, that is the sum of all applicable rules.
         /// </summary>
         public int Scorebase { get; set; }
 
@@ -43,6 +51,10 @@ namespace Axe.Extended.HtmlReport
             }
         }
 
+        /// <summary>
+        /// The color code for the score foreground color.
+        /// We want to have a green color for high score and red for low score.
+        /// </summary>
         public string ScoreForegroundColor
         {
             get

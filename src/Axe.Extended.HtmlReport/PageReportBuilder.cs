@@ -232,9 +232,17 @@ namespace Axe.Extended.HtmlReport
                         .Replace("{{NoneChecks}}", GenerateChecksSection(node.Node.None, "None Checks"))
                         );
                 }
+                string tags = string.Join(' ', item.Item.Tags.Select(x => $"<div class='regularition'>{x}</div>"));
+                if(Options.ShowRGAATags)
+                {
+                    var rgaaTags = item.Item.Id.GetTagsByRule();
+                    tags += string.Join(' ', rgaaTags.Select(x => $"<div class='regularition'>RGAA {x}</div>"));
+                }
                 overall.Append(
+                    
+
                     template.Replace("{{RuleId}}", item.Item.Id)
-                    .Replace("{{RuleTags}}", string.Join(' ', item.Item.Tags.Select(x => $"<div class='regularition'>{x}</div>")))
+                    .Replace("{{RuleTags}}", tags)
                     .Replace("{{Impact}}", item.Item.GetImpact())
                     .Replace("{{Description}}", HttpUtility.HtmlEncode(item.Item.Description))
                     .Replace("{{Help}}", HttpUtility.HtmlEncode(item.Item.Help))
