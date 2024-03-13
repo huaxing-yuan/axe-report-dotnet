@@ -23,7 +23,7 @@ namespace Axe.Extended.HtmlReport
         /// Provide a custom axe configure (https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure).
         /// If provided, the configuration will be used. If not provided, the default axe configuration will be used.
         /// </summary>
-        public JObject ? Config { get; set; }
+        public JObject? Config { get; set; }
 
         public bool CanGetScreenshot => GetScreenshot != EmptyGetScreenshot && GetScreenshot != null;
 
@@ -155,7 +155,7 @@ namespace Axe.Extended.HtmlReport
                 .Replace("{{NonApplicableRules}}", Result.Inapplicable.Count().ToString())
                 .Replace("{{PassedRules}}", Result.Passes.Count().ToString());
 
-            string fullname = Path.Combine(path, fileName??"index.html");
+            string fullname = Path.Combine(path, fileName ?? "index.html");
             File.WriteAllText(fullname, html);
 
             switch (Options.OutputFormat)
@@ -192,8 +192,10 @@ namespace Axe.Extended.HtmlReport
 
 
         static int uniqueCheckId = 0;
-        static int UniqueCheckId {
-            get{
+        static int UniqueCheckId
+        {
+            get
+            {
                 return uniqueCheckId++;
             }
         }
@@ -233,14 +235,12 @@ namespace Axe.Extended.HtmlReport
                         );
                 }
                 string tags = string.Join(' ', item.Item.Tags.Select(x => $"<div class='regularition'>{x}</div>"));
-                if(Options.ShowRGAATags)
+                var rgaaTags = Options.AdditionalTags?.GetTagsByRule(item.Item.Id);
+                if (rgaaTags != null)
                 {
-                    var rgaaTags = item.Item.Id.GetTagsByRule();
                     tags += string.Join(' ', rgaaTags.Select(x => $"<div class='regularition'>RGAA {x}</div>"));
                 }
                 overall.Append(
-                    
-
                     template.Replace("{{RuleId}}", item.Item.Id)
                     .Replace("{{RuleTags}}", tags)
                     .Replace("{{Impact}}", item.Item.GetImpact())

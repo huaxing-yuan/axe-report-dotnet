@@ -11,9 +11,10 @@ namespace Axe.Extended.HtmlReport
     /// A mapping of Axe rules to RGAA rules, for future use
     /// refers to the Mapping Rules Excel file
     /// </summary>
-    internal class AxeRgaaMapping
+    internal class RgaaTagsProvider : AdditionalTagsProvider
     {
-        public static Dictionary<string, IEnumerable<string>> Mapping { get; } = new Dictionary<string, IEnumerable<string>>()
+
+        private static Dictionary<string, IEnumerable<string>> Mapping { get; } = new Dictionary<string, IEnumerable<string>>()
         {
             {"area-alt", new string[] {"1.1.2"}},
             {"aria-hidden-focus", new string[] {"10.8.1"}},
@@ -71,5 +72,18 @@ namespace Axe.Extended.HtmlReport
             {"label-content-name-mismatch", new string[] {"11.2.3", "11.2.4"}},
             {"table-fake-caption", new string[] {"5.1.1"}},
         };
+
+        public override IEnumerable<string> GetTagsByRule(string ruleId)
+        {
+
+            if (Mapping.ContainsKey(ruleId))
+            {
+                return Mapping[ruleId];
+            }
+            else
+            {
+                return Array.Empty<string>();
+            }
+        }
     }
 }

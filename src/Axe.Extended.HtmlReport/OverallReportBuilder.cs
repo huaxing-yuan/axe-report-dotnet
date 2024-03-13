@@ -119,9 +119,9 @@ namespace Axe.Extended.HtmlReport
                 
                 //Add tags
                 ruleResults.AppendLine($"<td>");
-                if (options.ShowRGAATags)
+                var rgaaTags = options.AdditionalTags?.GetTagsByRule(ruleId);
+                if (rgaaTags != null)
                 {
-                    var rgaaTags = ruleId.GetTagsByRule();
                     foreach (var tag in rgaaTags)
                     {
                         ruleResults.AppendLine($"<span class='tag'>RGAA {tag}</span>");

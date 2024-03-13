@@ -104,7 +104,6 @@ namespace Axe.Extended.Test
             {
                 HighlightColor = Color.OrangeRed,
                 HighlightThickness = 5,
-                ShowRGAATags = true,
                 UseAdvancedScreenshot = true,
                 ScoringMode = ScoringMode.NonWeighted,
                 //Tags = Array.Empty<string>(),

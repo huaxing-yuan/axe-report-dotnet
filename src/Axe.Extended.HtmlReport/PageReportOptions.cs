@@ -29,8 +29,9 @@ namespace Axe.Extended.HtmlReport
 
         /// <summary>
         /// In the report, show the RGAA tags (equivalent RGAA Test Methdologie) for each rule. Default is true.
+        /// Default value: will use additional tags provider to get equivalent RGAA test tags.
         /// </summary>
-        public bool ShowRGAATags { get; set; } = true;
+        public AdditionalTagsProvider? AdditionalTags { get; set; } = new RgaaTagsProvider();
 
         /// <summary>
         /// Gets or sets the value indicating if advanced screenshot should be used. Default is true.
