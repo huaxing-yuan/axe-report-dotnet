@@ -155,9 +155,6 @@ namespace Axe.Extended.HtmlReport
 
             html = html.Replace("{{RowPageHeaderList}}", ruleTitles.ToString())
                 .Replace("{{RowRuleResults}}", ruleResults.ToString());
-
-            Directory.Delete(path, true);
-            Directory.CreateDirectory(path);
             string fullname = Path.Combine(path, fileName ?? "index.html");
             File.WriteAllText(fullname, html);
 
