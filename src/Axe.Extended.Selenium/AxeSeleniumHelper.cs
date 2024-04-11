@@ -125,6 +125,7 @@ namespace Axe.Extended.Selenium
                     }
                 }catch(Exception ex)
                 {
+                    Console.WriteLine("[Ally] Unable to get element from cssSelector or xPath");
                     //sometimes the cssSelector provided by axe can not be used by selenium.
                     //in this case can't make screenshot on the element.
                 }
@@ -138,9 +139,10 @@ namespace Axe.Extended.Selenium
                     driver.SwitchTo().DefaultContent(); //goes back to default context (leaving iframes)
                     return screenshot;
                 }
-                catch
+                catch (Exception ex)
                 {
                     //in some cases (hidden element, 0 height element, etc. the screeshot is not possible, leave these cases behind.
+                    Console.WriteLine("[Ally] Unable to get screenshot:" + ex.Message);
                     return new byte[0];
                 }
             }
@@ -167,6 +169,7 @@ namespace Axe.Extended.Selenium
                 var screenshot = MarkOnImage(imageViewPort, location, size, options);
                 return screenshot;
             }
+            Console.WriteLine("[Ally] Unable to get screenshot: Element has 0 height or width.");
             return new byte[0];
         }
 

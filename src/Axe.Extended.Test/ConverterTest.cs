@@ -116,7 +116,8 @@ namespace Axe.Extended.Test
                     UseAdvancedScreenshot = true,
                     ScoringMode = ScoringMode.NonWeighted,
                     //Tags = Array.Empty<string>(),
-                    Title = "AXA.FR"
+                    Title = "AXA.FR",
+                    OutputFormat = OutputFormat.Zip
                 };
                 var builder = new OverallReportBuilder().WithDefaultOptions(defaultOptions);
                 //Analyze first page
