@@ -142,7 +142,7 @@ namespace Axe.Extended.Selenium
                 catch (Exception ex)
                 {
                     //in some cases (hidden element, 0 height element, etc. the screeshot is not possible, leave these cases behind.
-                    Console.WriteLine("[Ally] Unable to get screenshot:" + ex.Message);
+                    Console.WriteLine("[Ally] Unable to get screenshot:" + ex.ToString());
                     return new byte[0];
                 }
             }
