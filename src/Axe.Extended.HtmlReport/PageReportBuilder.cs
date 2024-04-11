@@ -1,6 +1,9 @@
 ﻿using Deque.AxeCore.Commons;
 using Newtonsoft.Json.Linq;
+using System;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -23,7 +26,7 @@ namespace Axe.Extended.HtmlReport
         /// Provide a custom axe configure (https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure).
         /// If provided, the configuration will be used. If not provided, the default axe configuration will be used.
         /// </summary>
-        public JObject? Config { get; set; }
+        public JObject Config { get; set; }
 
         public bool CanGetScreenshot => GetScreenshot != EmptyGetScreenshot && GetScreenshot != null;
 
@@ -87,7 +90,7 @@ namespace Axe.Extended.HtmlReport
             return this;
         }
 
-        private byte[]? EmptyGetScreenshot(AxeResultNode node, PageReportOptions options)
+        private byte[] EmptyGetScreenshot(AxeResultNode node, PageReportOptions options)
         {
             return null;
         }
@@ -115,7 +118,7 @@ namespace Axe.Extended.HtmlReport
             return this;
         }
 
-        public AxePageResult? Result
+        public AxePageResult Result
         {
             get; private set;
         }
@@ -127,7 +130,7 @@ namespace Axe.Extended.HtmlReport
         /// <returns>
         /// absolute path of the exported test report.
         /// </returns>
-        public string Export(string? fileName = null)
+        public string Export(string fileName = null)
         {
             if (Result == null) throw new InvalidDataException("The report has not been built, please call Build or Analyze before exporting");
             var guid = Guid.NewGuid().ToString();
@@ -183,11 +186,15 @@ namespace Axe.Extended.HtmlReport
             //read content from Embeded Resource `Assets/index.html`
             var assembly = typeof(PageReportBuilder).Assembly;
             var resourceName = assembly.GetName().Name + ".Assets." + filename;
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream == null)
-                throw new Exception($"Unable to find resource {resourceName} in assembly {assembly.FullName}");
-            using StreamReader reader = new StreamReader(stream);
-            return reader.ReadToEnd();
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                if (stream == null)
+                    throw new Exception($"Unable to find resource {resourceName} in assembly {assembly.FullName}");
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
         }
 
 
@@ -234,11 +241,11 @@ namespace Axe.Extended.HtmlReport
                         .Replace("{{NoneChecks}}", GenerateChecksSection(node.Node.None, "None Checks"))
                         );
                 }
-                string tags = string.Join(' ', item.Item.Tags.Select(x => $"<div class='regularition'>{x}</div>"));
+                string tags = string.Join(" ", item.Item.Tags.Select(x => $"<div class='regularition'>{x}</div>"));
                 var rgaaTags = Options.AdditionalTags?.GetTagsByRule(item.Item.Id);
                 if (rgaaTags != null)
                 {
-                    tags += string.Join(' ', rgaaTags.Select(x => $"<div class='regularition'>RGAA {x}</div>"));
+                    tags += string.Join(" ", rgaaTags.Select(x => $"<div class='regularition'>RGAA {x}</div>"));
                 }
                 overall.Append(
                     template.Replace("{{RuleId}}", item.Item.Id)
@@ -250,10 +257,14 @@ namespace Axe.Extended.HtmlReport
                     .Replace("{{RuleNodeCount}}", item.Nodes.Length.ToString())
                     .Replace("{{RuleNodes}}", sb.ToString()));
             }
+
+            
+            
+
             return overall.ToString();
         }
 
-        private string GenerateChecksSection(AxeResultCheck[]? any, string label)
+        private string GenerateChecksSection(AxeResultCheck[] any, string label)
         {
             if (any != null && any.Any())
             {
@@ -276,8 +287,8 @@ namespace Axe.Extended.HtmlReport
         public GetScreenshotDelegate GetScreenshot { get; internal set; }
         public AnalyzeDelegate Analyze { get; internal set; }
 
-        public delegate byte[]? GetScreenshotDelegate(AxeResultNode node, PageReportOptions options);
-        public delegate AxeResult AnalyzeDelegate(JObject? axeConfig);
+        public delegate byte[] GetScreenshotDelegate(AxeResultNode node, PageReportOptions options);
+        public delegate AxeResult AnalyzeDelegate(JObject axeConfig);
 
 
         /// <summary>

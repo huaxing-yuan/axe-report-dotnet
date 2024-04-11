@@ -99,22 +99,22 @@ namespace Axe.Extended.HtmlReport
 
         private static KeyValuePair<int, string>[] scoreToForegroundColor = new KeyValuePair<int, string>[]
         {
-            new (0, "490000"),
-            new (50, "970000"),
-            new (60, "ff8c00"),
-            new (70, "e09d00"),
-            new (80, "bab200"),
-            new (90, "33dd33"),
+            new KeyValuePair<int, string> (0, "490000"),
+            new KeyValuePair<int, string> (50, "970000"),
+            new KeyValuePair<int, string> (60, "ff8c00"),
+            new KeyValuePair < int, string >(70, "e09d00"),
+            new KeyValuePair < int, string >(80, "bab200"),
+            new KeyValuePair < int, string >(90, "33dd33"),
         };
 
         private static KeyValuePair<int, string>[] scoreToBackgroundColor = new KeyValuePair<int, string>[]
 {
-            new (0, "970000"),
-            new (50, "955200"),
-            new (60, "745200"),
-            new (70, "696400"),
-            new (80, "406d0d"),
-            new (90, "0d430d"),
+            new KeyValuePair < int, string >(0, "970000"),
+            new KeyValuePair < int, string >(50, "955200"),
+            new KeyValuePair < int, string >(60, "745200"),
+            new KeyValuePair < int, string >(70, "696400"),
+            new KeyValuePair < int, string >(80, "406d0d"),
+            new KeyValuePair < int, string >(90, "0d430d"),
 };
     }
 }

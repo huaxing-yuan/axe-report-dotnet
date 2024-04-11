@@ -4,7 +4,10 @@ using Deque.AxeCore.Selenium;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using SkiaSharp;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace Axe.Extended.Selenium
@@ -21,7 +24,7 @@ namespace Axe.Extended.Selenium
         public static PageReportBuilder WithSelenium(this PageReportBuilder builder, WebDriver driver)
         {
             builder.GetScreenshot = (node, options) => ScreenShot(driver, node, options);
-            builder.Analyze = (JObject? config) => Analyze(builder, config, driver);
+            builder.Analyze = (JObject config) => Analyze(builder, config, driver);
             return builder;
         }
 
@@ -33,7 +36,7 @@ namespace Axe.Extended.Selenium
         /// <param name="driver">Selenium WebDriver</param>
         /// <param name="title">Title of you application report</param>
         /// <returns>PageReportBuilder object to analyze the current page.</returns>
-        public static PageReportBuilder WithSelenium(this OverallReportBuilder builder, WebDriver driver, string? title)
+        public static PageReportBuilder WithSelenium(this OverallReportBuilder builder, WebDriver driver, string title)
         {
             var option = builder.Options.Clone();
             if (title != null)
@@ -52,7 +55,7 @@ namespace Axe.Extended.Selenium
         }
 
 
-        private static AxeResult Analyze(PageReportBuilder builder, JObject? config, WebDriver driver)
+        private static AxeResult Analyze(PageReportBuilder builder, JObject config, WebDriver driver)
         {
             AxeExtendedBuilder axeBuilder = new AxeExtendedBuilder(driver);
             if (builder.Options.Tags.Any())
@@ -75,7 +78,7 @@ namespace Axe.Extended.Selenium
         private static byte[] ScreenShot(WebDriver driver, AxeResultNode node, PageReportOptions options)
         {
             var selectors = node.Target.FrameShadowSelectors;
-            IWebElement? element = null;
+            IWebElement element = null;
             if (selectors.Count > 1)
             {
                 if (selectors.Any((IList<string> shadowSelectors) => shadowSelectors.Count > 1))
@@ -181,18 +184,24 @@ namespace Axe.Extended.Selenium
         private static byte[] MarkOnImage(Screenshot imageViewPort, Point location, Size size, PageReportOptions options)
         {
             SKColor color = new SKColor(options.HighlightColor.R, options.HighlightColor.G, options.HighlightColor.B);
-            using SKBitmap bitmap = SKBitmap.Decode(imageViewPort.AsByteArray);
-            using SKCanvas canvas = new SKCanvas(bitmap);
-            canvas.DrawRect(location.X, location.Y,
-                size.Width, size.Height,
-                new SKPaint()
+            using (SKBitmap bitmap = SKBitmap.Decode(imageViewPort.AsByteArray))
+            {
+                using (SKCanvas canvas = new SKCanvas(bitmap))
                 {
-                    Color = color,
-                    Style = SKPaintStyle.Stroke,
-                    StrokeWidth = options.HighlightThickness
-                });
-            using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
-            return data.ToArray();
+                    canvas.DrawRect(location.X, location.Y,
+                        size.Width, size.Height,
+                        new SKPaint()
+                        {
+                            Color = color,
+                            Style = SKPaintStyle.Stroke,
+                            StrokeWidth = options.HighlightThickness
+                        });
+                    using (var data = bitmap.Encode(SKEncodedImageFormat.Png, 100))
+                    {
+                        return data.ToArray();
+                    }
+                }
+            }
         }
     }
 }

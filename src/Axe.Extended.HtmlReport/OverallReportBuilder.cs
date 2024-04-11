@@ -1,6 +1,7 @@
 ﻿using Deque.AxeCore.Commons;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
@@ -60,7 +61,7 @@ namespace Axe.Extended.HtmlReport
         /// <param name="fileName">the filename of export report, default value "index.html"</param>
         /// <returns>the complete path of report</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public string Export(string? fileName = null)
+        public string Export(string fileName = null)
         {
             if (!hasBuilt) Build();
             string path = Options.OutputFolder ?? Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());

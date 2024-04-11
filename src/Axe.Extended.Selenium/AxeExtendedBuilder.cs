@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace Axe.Extended.Selenium
         private AxeRunOptions runOptions = new AxeRunOptions();
         private string outputFilePath = null;
         private bool useLegacyMode = false;
-        private JObject? axeConfig;
+        private JObject axeConfig;
 
         /// <summary>
         /// Initialize an instance of <see cref="AxeBuilder"/>
@@ -462,7 +463,7 @@ namespace Axe.Extended.Selenium
             }
         }
 
-        internal void WithAxeConfig(JObject? config)
+        internal void WithAxeConfig(JObject config)
         {
             axeConfig = config;
         }

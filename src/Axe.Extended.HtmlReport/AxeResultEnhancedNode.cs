@@ -16,6 +16,6 @@ namespace Axe.Extended.HtmlReport
         }
 
         public AxeResultNode Node { get; internal set; }
-        public byte[]? Screenshot { get; internal set; }
+        public byte[] Screenshot { get; internal set; }
     }
 }

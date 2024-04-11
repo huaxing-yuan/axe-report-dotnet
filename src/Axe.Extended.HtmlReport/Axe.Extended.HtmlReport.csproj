@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,7 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Deque.AxeCore.Commons" Version="4.8.1" />
+    <PackageReference Include="Deque.AxeCore.Commons" Version="4.9.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <Reference Include="System.Web" />
   </ItemGroup>
 
 </Project>

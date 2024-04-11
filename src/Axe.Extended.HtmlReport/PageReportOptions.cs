@@ -20,7 +20,7 @@ namespace Axe.Extended.HtmlReport
         /// <summary>
         /// Gets or sets the output folder of the HTML report. If not set, the report will be generated in default temprary folder.
         /// </summary>
-        public string? OutputFolder { get; set; }
+        public string OutputFolder { get; set; }
 
         /// <summary>
         /// The language should be used in the report. Default is English.
@@ -31,7 +31,7 @@ namespace Axe.Extended.HtmlReport
         /// In the report, show the RGAA tags (equivalent RGAA Test Methdologie) for each rule. Default is true.
         /// Default value: will use additional tags provider to get equivalent RGAA test tags.
         /// </summary>
-        public AdditionalTagsProvider? AdditionalTags { get; set; } = new RgaaTagsProvider();
+        public AdditionalTagsProvider AdditionalTags { get; set; } = new RgaaTagsProvider();
 
         /// <summary>
         /// Gets or sets the value indicating if advanced screenshot should be used. Default is true.
